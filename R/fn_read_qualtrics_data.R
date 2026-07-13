@@ -2,15 +2,14 @@
 
 fn_read_qualtrics_data <- function(full_file_path,
                                    col_types_list=list(.default = "c"),
-                                   filter_ids=c("uvmid uvmSurveyID","PID"),
+                                   filter_ids=c("PID", "record_id", "uvmid uvmSurveyID"),
                                    drop_cols=c(),
                                    num_vars=c(),
-                                   needs_key=FALSE,
                                    key_df=NULL) {
 
 
 
-  ## help function _ _ _ _ _ _ _ _ _ _ _ _ _ _
+  ## helper funcs _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
   ## post: https://www.reddit.com/r/rstats/s/NSb2eg6Cj5
   ## comment: https://www.reddit.com/r/rstats/comments/16vbzaf/comment/k2r6a4q/
@@ -24,17 +23,16 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
 
+  ## column names only...
   df_names <- read_csv(full_file_path,
                        col_names = FALSE,
                        n_max = 1,
                        progress = FALSE,
                        show_col_types = FALSE) |> as.vector(mode="character")
 
-  #col_types = list(Species = "lidc", .default = col_double())
 
 
-
-  ## full dataframe:
+  ## full dataframe...
   df <- read_csv(full_file_path,
                  col_names = FALSE,
                  skip = 3,
@@ -43,63 +41,68 @@ fn_read_qualtrics_data <- function(full_file_path,
                  show_col_types = FALSE) |>
 
 
-    ## drop rows 1+2 (Qualtrics info):
+    ## drop rows 1+2 (Qualtrics info) {all}:
     slice(-c(1,2)) |>
 
 
-    ## drop columns (Qualtrics info)
-    select(-c(Status, IPAddress,
-              RecipientLastName, RecipientFirstName,
-              RecipientEmail, ExternalReference,                           ## kept:
-              LocationLatitude, LocationLongitude,                         ##       StartDate, EndDate, Progress, Duration..in.seconds., Finished,
-              DistributionChannel, UserLanguage)) |>                       ##       RecordedDate, ResponseId, ResponseID, SurveyID, uvmid, uvmSurveyID
+    ## drop columns (Qualtrics info) {all}
+    select(-c(Status, IPAddress,                             ## kept: StartDate, EndDate,
+              RecipientLastName, RecipientFirstName,         ##       Progress, Duration..in.seconds., Finished,
+              RecipientEmail, ExternalReference,             ##       RecordedDate, ResponseId, ResponseID, SurveyID
+              LocationLatitude, LocationLongitude,           ##
+              DistributionChannel, UserLanguage)) |>         ## also: uvmid, uvmSurveyID / PID / SC0, Score / etc.
 
 
-    ## rename to remove spaces/parentheses
-    rename(Duration=`Duration (in seconds)`) |>
+    ## rename to remove spaces/parentheses {all}
+    rename(Duration = `Duration (in seconds)`) |>
 
 
     ## drop any other columns:
-    do_if(length(drop_cols)>0,
+    do_if(length(drop_cols) > 0,
           function(df) select(df, !drop_cols) ) |>
 
 
-    ## filter out id NAs:
-    do_if(filter_ids=="uvmid uvmSurveyID",
-          function(df) filter(df, !is.na(uvmid) & !is.na(uvmSurveyID)) ) |>
-    do_if(filter_ids=="PID",
-          function(df) filter(df, !is.na(PID)) ) |>
-
-
     ## change listed columns to numeric (from string):
-    do_if(length(num_vars)>0,
+    do_if(length(num_vars) > 0,
           function(df) mutate(df, across(.cols=all_of(numvars_all), .fns=as.numeric)) ) |>
 
 
-    ## change date columns from strings to POSIXct:
-    do_if(format_dates,
-          function(df) mutate(df,
-                              DateSt=as.POSIXct(StartDate, format="%Y-%m-%d %H:%M:%S"),
-                              DateEn=as.POSIXct(EndDate, format="%Y-%m-%d %H:%M:%S"),
-                              .keep="unused") ) |>
+    ## change date columns from strings to POSIXct {all}:
+    mutate(DateSt = as.POSIXct(StartDate, format="%Y-%m-%d %H:%M:%S"),
+           DateEn = as.POSIXct(EndDate, format="%Y-%m-%d %H:%M:%S"),
+           .keep="unused") |>
 
 
-    ## adding `record_id` (full_join keeps all rows):
-    ## ADD MORE ERROR CHECKING HERE < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < <
-    do_if(needs_key,
-          function(df) full_join(df, key_df, by=join_by(uvmid)) ) |>
 
-
-    ## renaming PID:
+    ## renaming {PID}:
     do_if(filter_ids=="PID",
           function(df) rename(df, record_id=PID) ) |>
 
 
-    ## move columns to the front of the dataframe:
-    do_if(filter_ids=="uvmid uvmSurveyID",
-          function(df) relocate(c(uvmSurveyID, record_id, uvmid, DateSt, DateEn, Finished, Progress, Duration)) ) |>
-    do_if(filter_ids=="PID",
-          function(df)  relocate(c(record_id, DateSt, DateEn, Finished, Progress, Duration)) )
+    ## move columns to the front of the dataframe {PID or record_id}:
+    do_if(filter_ids %in% c("PID", "record_id"),
+          function(df)  relocate(df, c(record_id, DateSt, DateEn, Finished, Progress, Duration)) ) |>
+
+
+    ## filter, add, and move {uvm}:
+    do_if(filter_ids == "uvmid uvmSurveyID",
+          function(df) {
+
+            df |>
+
+              filter(!is.na(uvmid) & !is.na(uvmSurveyID)) |>     ## filter out id NAs
+
+              full_join(df, key_df, by=join_by(uvmid)) |>        ## adding `record_id` (full_join keeps all rows)
+
+              relocate(df, c(uvmSurveyID, record_id, uvmid,
+                             DateSt, DateEn,
+                             Finished, Progress, Duration))      ## move columns to the front of the dataframe
+
+            } ) |>
+
+
+    ## filter out id NAs {all}:
+    filter(!is.na(record_id))
 
 
 

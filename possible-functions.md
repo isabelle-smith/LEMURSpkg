@@ -79,7 +79,7 @@ p3df_find_duplicates <- function(df) {
 
 1. made `fn_read_qualtrics_data` [2026.07.13]
 
-2. need `fn_output_qualtrics_data`:
+2. do I want `fn_output_qualtrics_data`? [below]
 
 ```
 #
@@ -169,7 +169,7 @@ for (i in 1:length(p4_files)){
               RecipientLastName, RecipientFirstName,
               RecipientEmail, ExternalReference,                           ## kept:
               LocationLatitude, LocationLongitude,                         ##       StartDate, EndDate, Progress, Duration..in.seconds., Finished,
-              DistributionChannel, UserLanguage)) |>                       ##       RecordedDate, ResponseId, ResponseID, SurveyID, uvmid, uvmSurveyID
+              DistributionChannel, UserLanguage)) |>                       ##       RecordedDate, ResponseId, ResponseID, SurveyID, PID
     
     mutate(DateSt=as.POSIXct(StartDate, format="%Y-%m-%d %H:%M:%S"),       ## change date columns from strings to POSIXct
            DateEn=as.POSIXct(EndDate, format="%Y-%m-%d %H:%M:%S"),
