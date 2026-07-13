@@ -77,9 +77,34 @@ p3df_find_duplicates <- function(df) {
 
 ##  READING IN DATA
 
-p3 version  
+1. made `fn_read_qualtrics_data` [2026.07.13]
+
+2. need `fn_output_qualtrics_data`:
 
 ```
+#
+# assign(paste0("p0df_", p3_names[i],"_0"),       ## assign df
+#        df)
+#
+# p0df_0_list[[i]] <- df                          ## append to list
+#
+#
+# nm <- names(df)
+#
+# assign(paste0("nm_", p0_names[i]),              ## names array
+#        nm)
+# assign(paste0("nm_", p0_names[i], "_txt"),      ## text names array
+#        grep("(_TEXT)$", nm, value=TRUE))
+#
+```
+
+3. SCRATCH:
+
+p3 version
+
+```
+for (i in 1:length(p3_files)){
+
   df <- read.csv(paste0(path_to_masswearables,
                         path_to_phase3,
                         "raw/",
