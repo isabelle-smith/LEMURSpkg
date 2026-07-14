@@ -1,6 +1,9 @@
 
 
-#' @title Compare possible duplicate rows.
+#' @title Compare values of duplicate rows.
+#'
+#' @description
+#' Description goes here.
 #'
 #' @param df Data frame to check.
 #' @param id_cols Character vector of columns used to identify which rows to compare.
@@ -11,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' check_duplicates(df,
+#' check_duplicates(LEMURS_dupe_df,
 #'   id_cols      = c("surveyID", "recordID"),
 #'   exclude_cols = c("progress", "variablR"),
 #'   later_cols   = c("variablC"))

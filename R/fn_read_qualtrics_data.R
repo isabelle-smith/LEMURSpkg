@@ -1,15 +1,40 @@
 
 
+#' @title Read-in and lightly clean a Qualtrics CSV.
+#'
+#' @description
+#' Description goes here.
+#'
+#' @param full_file_path File path to CSV file from Qualtrics. Assumes headers and 2 rows of Qualtrics info are present.
+#' @param col_types_list (optional) List of column types for [readr::read_csv()].
+#' @param unique_id One of "PID", "record_id", or "uvmid+uvmSurveyID". Column(s) specified must be present in file.
+#' @param drop_cols (optional)
+#' @param num_vars (optional)
+#' @param key_df Data frame with columns uvmid and record_id; used only if `unique_id="uvmid+uvmSurveyID"`.
+#'
+#' @details
+#' Qualtrics columns that are removed: Status, IPAddress, RecipientLastName, RecipientFirstName, RecipientEmail, ExternalReference, LocationLatitude, LocationLongitude, DistributionChannel, UserLanguage.
+#'
+#' Qualtrics columns that are kept: StartDate, EndDate, Progress, Duration (in seconds), Finished, RecordedDate, ResponseId, ResponseID, SurveyID, and any user-created others.
+#'
+#' @returns Data frame.
+#' @export
+#'
+#' @examples
+#' ## ADD EXAMPLES
+#' ## put file(s) in `extdata` directory
+
+
 fn_read_qualtrics_data <- function(full_file_path,
                                    col_types_list=list(.default = "c"),
-                                   filter_ids=c("PID", "record_id", "uvmid uvmSurveyID"),
+                                   unique_id,
                                    drop_cols=c(),
                                    num_vars=c(),
                                    key_df=NULL) {
 
 
 
-  ## helper funcs _ _ _ _ _ _ _ _ _ _ _ _ _ _
+  ## helper fx(s) _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
   ## post: https://www.reddit.com/r/rstats/s/NSb2eg6Cj5
   ## comment: https://www.reddit.com/r/rstats/comments/16vbzaf/comment/k2r6a4q/
@@ -47,7 +72,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
     ## drop columns (Qualtrics info) {all}
     select(-c(Status, IPAddress,                             ## kept: StartDate, EndDate,
-              RecipientLastName, RecipientFirstName,         ##       Progress, Duration..in.seconds., Finished,
+              RecipientLastName, RecipientFirstName,         ##       Progress, Duration (in seconds), Finished,
               RecipientEmail, ExternalReference,             ##       RecordedDate, ResponseId, ResponseID, SurveyID
               LocationLatitude, LocationLongitude,           ##
               DistributionChannel, UserLanguage)) |>         ## also: uvmid, uvmSurveyID / PID / SC0, Score / etc.
@@ -59,7 +84,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
     ## drop any other columns:
     do_if(length(drop_cols) > 0,
-          function(df) select(df, !drop_cols) ) |>
+          function(df) select(df, -any_of(drop_cols)) ) |>
 
 
     ## change listed columns to numeric (from string):
@@ -75,17 +100,17 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
     ## renaming {PID}:
-    do_if(filter_ids=="PID",
+    do_if(unique_id=="PID",
           function(df) rename(df, record_id=PID) ) |>
 
 
     ## move columns to the front of the dataframe {PID or record_id}:
-    do_if(filter_ids %in% c("PID", "record_id"),
+    do_if(unique_id %in% c("PID", "record_id"),
           function(df)  relocate(df, c(record_id, DateSt, DateEn, Finished, Progress, Duration)) ) |>
 
 
     ## filter, add, and move {uvm}:
-    do_if(filter_ids == "uvmid uvmSurveyID",
+    do_if(unique_id == "uvmid+uvmSurveyID",
           function(df) {
 
             df |>
