@@ -1,6 +1,6 @@
 
 to use:
 ```
-devtools::install_github("isabelletsmith/LEMURSpkg")
+if ( !("LEMURSpkg" %in% installed.packages()) ) { devtools::install_github("isabelle-smith/LEMURSpkg") }
 library(LEMURSpkg)
 ```
