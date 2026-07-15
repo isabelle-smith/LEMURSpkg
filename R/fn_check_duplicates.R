@@ -7,27 +7,34 @@
 #'
 #' @param df Data frame to check.
 #' @param id_cols Character vector of columns used to identify which rows to compare.
-#' @param exclude_cols Character vector of columns left out entirely.
-#' @param later_cols Character vector of columns only compared if rows are otherwise identical.
+#' @param exclude_cols Optional. Character vector of columns left out entirely.
+#' @param later_cols Optional. Character vector of columns only compared if rows are otherwise identical.
+#' @param return_df Optional. Whether to return the `"input"` or a `"new"` data frame. Defaults to `return_df = "new"`
 #'
-#' @returns Data frame with columns is_empty (boolean), status (string), matched_rows (string), and one or more <col>_match (boolean).
+#' @returns Input or new data frame with columns is_empty (boolean), status (string), matched_rows (string), and one or more <col>_match (boolean).
+#'
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
-#' check_duplicates(LEMURS_dupe_df,
+#' fn_check_duplicates(LEMURSpkg::LEMURS_dupe_df,
 #'   id_cols      = c("surveyID", "recordID"),
 #'   exclude_cols = c("progress", "variablR"),
 #'   later_cols   = c("variablC"))
 
 
-fn_check_duplicates <- function(df, id_cols, exclude_cols, later_cols) {
+fn_check_duplicates <- function(df,
+                                id_cols,
+                                exclude_cols=c(),
+                                later_cols=c(),
+                                return_df="new") {
 
   stopifnot(all(id_cols %in% names(df)))
   stopifnot(all(exclude_cols %in% names(df)))
   stopifnot(all(later_cols %in% names(df)))
 
 
-  compare_cols <- setdiff(colnames(df), c(id_cols, exclude_cols, later_cols))
+  compare_cols <- base::setdiff(colnames(df), c(id_cols, exclude_cols, later_cols))
 
 
   # ---- helpers ---------------------------------------------------------
@@ -69,7 +76,7 @@ fn_check_duplicates <- function(df, id_cols, exclude_cols, later_cols) {
   for (idxs in groups) {
 
     for (i in idxs) {
-      others <- setdiff(idxs, i)
+      others <- dplyr::setdiff(idxs, i)
 
       if (df$is_empty[i]) {
         status[[i]] <- "empty"
@@ -98,9 +105,12 @@ fn_check_duplicates <- function(df, id_cols, exclude_cols, later_cols) {
       if (length(identical_with) > 0) {
         status[[i]]      <- "completely_identical"
         matched_rows[[i]] <- identical_with
-        for (cn in later_cols) {
-          later_match[i, paste0(cn, "_match")] <-
-            all(vapply(identical_with, function(j) val_equal(df[[cn]][i], df[[cn]][j]), logical(1)))
+
+        if (length(later_cols) > 0) {
+          for (cn in later_cols) {
+            later_match[i, paste0(cn, "_match")] <-
+              all(vapply(identical_with, function(j) val_equal(df[[cn]][i], df[[cn]][j]), logical(1)))
+          }
         }
       } else if (length(partial_with) > 0) {
         status[[i]]      <- "partially_identical"
@@ -112,13 +122,21 @@ fn_check_duplicates <- function(df, id_cols, exclude_cols, later_cols) {
   }
 
 
+  ## starting results df
   results <- df[, c(id_cols, "is_empty")]
+
 
   # ---- assemble results --------------------------------------------------
   results$status       <- status
   results$matched_rows <- sapply(matched_rows, function(x) if (length(x) == 0) NA_character_ else paste(x, collapse = ","))
   results <- cbind(results, later_match)
   results$row_num <- seq_len(nrow(results))
+
+  ## sorting result columns (input `return_df` only)
+  if (return_df=="input") {
+    results <- cbind(results,
+                     df[base::setdiff(names(df), c(id_cols, "is_empty"))])
+  }
 
   return(results)
 

@@ -6,10 +6,11 @@
 #' Description goes here.
 #'
 #' @param full_file_path File path to CSV file from Qualtrics. Assumes headers and 2 rows of Qualtrics info are present.
-#' @param col_types_list (optional) List of column types for [readr::read_csv()].
+#' @param col_types_list Optional. List of column types for [readr::read_csv()].
 #' @param unique_id One of "PID", "record_id", or "uvmid+uvmSurveyID". Column(s) specified must be present in file.
-#' @param drop_cols (optional)
-#' @param num_vars (optional)
+#' @param drop_cols Optional. Character vector of columns to remove. Not required to be present in file.
+#' @param num_vars Optional. Character vector of columns to convert to numeric via [as.numeric()]. Not required to be present in file.
+#' @param int_vars Optional. Character vector of columns to convert to integer via [as.integer()]. Not required to be present in file.
 #' @param key_df Data frame with columns uvmid and record_id; used only if `unique_id="uvmid+uvmSurveyID"`.
 #'
 #' @details
@@ -17,7 +18,9 @@
 #'
 #' Qualtrics columns that are kept: StartDate, EndDate, Progress, Duration (in seconds), Finished, RecordedDate, ResponseId, ResponseID, SurveyID, and any user-created others.
 #'
-#' @returns Data frame.
+#' @returns Data frame without `drop_cols`, other Qualtrics columns, and rows that have NA in `unique_id`.
+#'
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
@@ -30,6 +33,7 @@ fn_read_qualtrics_data <- function(full_file_path,
                                    unique_id,
                                    drop_cols=c(),
                                    num_vars=c(),
+                                   int_vars=c(),
                                    key_df=NULL) {
 
 
@@ -49,64 +53,67 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
   ## column names only...
-  df_names <- read_csv(full_file_path,
-                       col_names = FALSE,
-                       n_max = 1,
-                       progress = FALSE,
-                       show_col_types = FALSE) |> as.vector(mode="character")
+  df_names <- readr::read_csv(full_file_path,
+                              col_names = FALSE,
+                              n_max = 1,
+                              progress = FALSE,
+                              show_col_types = FALSE) |> as.vector(mode="character")
 
 
 
   ## full dataframe...
-  df <- read_csv(full_file_path,
-                 col_names = FALSE,
-                 skip = 3,
-                 col_types = col_types_list,
-                 progress = FALSE,
-                 show_col_types = FALSE) |>
+  df <- readr::read_csv(full_file_path,
+                        col_names = FALSE,
+                        skip = 3,
+                        col_types = col_types_list,
+                        progress = FALSE,
+                        show_col_types = FALSE) |>
 
 
     ## drop rows 1+2 (Qualtrics info) {all}:
-    slice(-c(1,2)) |>
+    dplyr::slice(-c(1,2)) |>
 
 
     ## drop columns (Qualtrics info) {all}
-    select(-c(Status, IPAddress,                             ## kept: StartDate, EndDate,
-              RecipientLastName, RecipientFirstName,         ##       Progress, Duration (in seconds), Finished,
-              RecipientEmail, ExternalReference,             ##       RecordedDate, ResponseId, ResponseID, SurveyID
-              LocationLatitude, LocationLongitude,           ##
-              DistributionChannel, UserLanguage)) |>         ## also: uvmid, uvmSurveyID / PID / SC0, Score / etc.
+    dplyr::select(-c("Status", "IPAddress",                             ## kept: StartDate, EndDate,
+                     "RecipientLastName", "RecipientFirstName",         ##       Progress, Duration (in seconds), Finished,
+                     "RecipientEmail", "ExternalReference",             ##       RecordedDate, ResponseId, ResponseID, SurveyID
+                     "LocationLatitude", "LocationLongitude",           ##
+                     "DistributionChannel", "UserLanguage")) |>         ## also: uvmid, uvmSurveyID / PID / SC0, Score / etc.
 
 
     ## rename to remove spaces/parentheses {all}
-    rename(Duration = `Duration (in seconds)`) |>
+    dplyr::rename(Duration = .data$`Duration (in seconds)`) |>
 
 
     ## drop any other columns:
     do_if(length(drop_cols) > 0,
-          function(df) select(df, -any_of(drop_cols)) ) |>
+          function(df) dplyr::select(df, -dplyr::any_of(drop_cols)) ) |>
 
 
-    ## change listed columns to numeric (from string):
+    ## change listed columns types:
     do_if(length(num_vars) > 0,
-          function(df) mutate(df, across(.cols=all_of(numvars_all), .fns=as.numeric)) ) |>
+          function(df) dplyr::mutate(df, dplyr::across(.cols=dplyr::any_of(num_vars), .fns=as.numeric)) ) |>
+    do_if(length(int_vars) > 0,
+          function(df) dplyr::mutate(df, dplyr::across(.cols=dplyr::any_of(int_vars), .fns=as.integer)) ) |>
 
 
     ## change date columns from strings to POSIXct {all}:
-    mutate(DateSt = as.POSIXct(StartDate, format="%Y-%m-%d %H:%M:%S"),
-           DateEn = as.POSIXct(EndDate, format="%Y-%m-%d %H:%M:%S"),
-           .keep="unused") |>
+    dplyr::mutate(DateSt = as.POSIXct(.data$StartDate, format="%Y-%m-%d %H:%M:%S"),
+                  DateEn = as.POSIXct(.data$EndDate, format="%Y-%m-%d %H:%M:%S"),
+                  .keep="unused") |>
 
 
 
     ## renaming {PID}:
     do_if(unique_id=="PID",
-          function(df) rename(df, record_id=PID) ) |>
+          function(df) dplyr::rename(df, record_id=.data$PID) ) |>
 
 
     ## move columns to the front of the dataframe {PID or record_id}:
     do_if(unique_id %in% c("PID", "record_id"),
-          function(df)  relocate(df, c(record_id, DateSt, DateEn, Finished, Progress, Duration)) ) |>
+          function(df)  dplyr::relocate(df, dplyr::all_of( c("record_id", "DateSt", "DateEn",
+                                                             "Finished", "Progress", "Duration") )) ) |>
 
 
     ## filter, add, and move {uvm}:
@@ -115,19 +122,19 @@ fn_read_qualtrics_data <- function(full_file_path,
 
             df |>
 
-              filter(!is.na(uvmid) & !is.na(uvmSurveyID)) |>     ## filter out id NAs
+              dplyr::filter(!is.na(.data$uvmid) & !is.na(.data$uvmSurveyID)) |>          ## filter out id NAs
 
-              full_join(df, key_df, by=join_by(uvmid)) |>        ## adding `record_id` (full_join keeps all rows)
+              dplyr::full_join(key_df, by="uvmid") |>                                    ## adding `record_id` (full_join keeps all rows)
 
-              relocate(df, c(uvmSurveyID, record_id, uvmid,
-                             DateSt, DateEn,
-                             Finished, Progress, Duration))      ## move columns to the front of the dataframe
+              dplyr::relocate(dplyr::all_of( c("uvmSurveyID", "uvmid",                   ## move columns to the front of the dataframe
+                                               "record_id", "DateSt", "DateEn",
+                                               "Finished", "Progress", "Duration") ))
 
-            } ) |>
+          } ) |>
 
 
     ## filter out id NAs {all}:
-    filter(!is.na(record_id))
+    dplyr::filter(!is.na(.data$record_id))
 
 
 

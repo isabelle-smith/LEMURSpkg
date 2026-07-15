@@ -1,6 +1,36 @@
 
 # Possible Functions
 
+devtools::install_github("isabelletsmith/LEMURSpkg")
+
+```
+data_function <-function(df, vartype=c("a","b")){
+    
+    do_if <- function(df, cond, f){
+        if(cond) f(df) else df
+    }
+    
+    
+    df |>
+        
+        mutate(varC = .data$varA + .data$varB) |>
+        
+        do_if(vartype == "a",
+              function(df) {
+                  
+                  df |>
+                      filter(!is.na(.data$varA)) |>
+                      relocate(varA, varC)
+              }) |>
+        
+        do_if(vartype == "b",
+              function(df) relocate(df, varB, varC)
+              ) |>
+        
+        dplyr::filter(!is.na(.data$id_col))
+}
+```
+
 ## CASEMAKER
 
 used: p1  

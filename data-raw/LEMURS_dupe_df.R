@@ -103,5 +103,5 @@ rownames(perm.val4.sort) <- NULL
 
 LEMURS_dupe_df <- perm.val4.sort
 
-usethis::use_data(LEMURS_dupe_df, overwrite = TRUE)
+usethis::use_data(LEMURS_dupe_df)
 
