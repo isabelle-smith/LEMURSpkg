@@ -85,7 +85,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
     ## rename to remove spaces/parentheses {all}
-    dplyr::rename(Duration = .data$`Duration (in seconds)`) |>
+    dplyr::rename(dplyr::any_of( c(Duration = "Duration (in seconds)") )) |>
 
 
     ## drop any other columns:
