@@ -136,7 +136,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
     ## filter out id NAs {all}:
-    dplyr::filter(!is.na(record_id))
+    dplyr::filter(if_any(matches("^record_id$"), ~!is.na(.x)))
 
 
 
