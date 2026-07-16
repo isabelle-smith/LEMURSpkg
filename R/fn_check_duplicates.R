@@ -9,7 +9,8 @@
 #' @param id_cols Character vector of columns used to identify which rows to compare.
 #' @param exclude_cols Optional. Character vector of columns left out entirely.
 #' @param later_cols Optional. Character vector of columns only compared if rows are otherwise identical.
-#' @param return_df Optional. Whether to return the `"input"` or a `"new"` data frame. Defaults to `return_df = "new"`
+#' @param na_equal Logical. Whether or not a value should be considered identical to NA. Defaults to `FALSE`.
+#' @param return_new Logical. Whether or not to return a `"new"` data frame (vs. the input data frame with columns added). Defaults to `TRUE`.
 #'
 #' @returns Input or new data frame with columns is_empty (boolean), status (string), matched_rows (string), and one or more <col>_match (boolean).
 #'
@@ -23,11 +24,13 @@
 #'   later_cols   = c("variablC"))
 
 
+
 fn_check_duplicates <- function(df,
                                 id_cols,
                                 exclude_cols=c(),
                                 later_cols=c(),
-                                return_df="new") {
+                                na_equal=NA,
+                                return_new=TRUE) {
 
   stopifnot(all(id_cols %in% names(df)))
   stopifnot(all(exclude_cols %in% names(df)))
@@ -39,11 +42,21 @@ fn_check_duplicates <- function(df,
 
   # ---- helpers ---------------------------------------------------------
 
-  # NA-aware equality: NA == NA is TRUE, NA vs a value is FALSE (mismatch)
-  val_equal <- function(a, b) {
-    if (is.na(a) && is.na(b)) return(TRUE)
-    if (is.na(a) || is.na(b)) return(FALSE)
-    a == b
+  # NA-aware equality: NA == NA is TRUE, and...
+  if (na_equal) {                                   ## NA vs a value is TRUE
+    val_equal <- function(a, b) {
+      if (is.na(a) && is.na(b)) return(TRUE)
+      if (is.na(a) || is.na(b)) return(TRUE)
+      return(a == b)
+    }
+
+  } else {                                         ## NA vs a value is FALSE (mismatch)
+    val_equal <- function(a, b) {
+      if (is.na(a) && is.na(b)) return(TRUE)
+      if (is.na(a) || is.na(b)) return(FALSE)
+      return(a == b)
+    }
+
   }
 
   # a row is "empty" if every comparison column is NA
@@ -132,8 +145,8 @@ fn_check_duplicates <- function(df,
   results <- cbind(results, later_match)
   results$row_num <- seq_len(nrow(results))
 
-  ## sorting result columns (input `return_df` only)
-  if (return_df=="input") {
+  ## adding result columns to input (`return_new` = FALSE)
+  if (!return_new) {
     results <- cbind(results,
                      df[base::setdiff(names(df), c(id_cols, "is_empty"))])
   }
