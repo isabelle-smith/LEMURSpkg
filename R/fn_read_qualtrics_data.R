@@ -65,7 +65,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
   ## full dataframe...
   df <- readr::read_csv(full_file_path,
-                        col_names = FALSE,
+                        col_names = df_names,
                         skip = 3,
                         col_types = col_types_list,
                         progress = FALSE,
