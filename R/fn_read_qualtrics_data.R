@@ -78,10 +78,10 @@ fn_read_qualtrics_data <- function(full_file_path,
 
     ## drop columns (Qualtrics info) {all}
     dplyr::select(-dplyr::any_of( c("Status", "IPAddress",               ## kept: StartDate, EndDate,
-                     "RecipientLastName", "RecipientFirstName",          ##       Progress, Duration (in seconds), Finished,
-                     "RecipientEmail", "ExternalReference",              ##       RecordedDate, ResponseId, ResponseID, SurveyID
-                     "LocationLatitude", "LocationLongitude",            ##
-                     "DistributionChannel", "UserLanguage") )) |>        ## also: uvmid, uvmSurveyID / PID / SC0, Score / etc.
+                                    "RecipientLastName", "RecipientFirstName",          ##       Progress, Duration (in seconds), Finished,
+                                    "RecipientEmail", "ExternalReference",              ##       RecordedDate, ResponseId, ResponseID, SurveyID
+                                    "LocationLatitude", "LocationLongitude",            ##
+                                    "DistributionChannel", "UserLanguage") )) |>        ## also: uvmid, uvmSurveyID / PID / SC0, Score / etc.
 
 
     ## rename to remove spaces/parentheses {all}
