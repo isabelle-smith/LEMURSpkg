@@ -14,6 +14,8 @@
 #' @param key_df Data frame with columns uvmid and record_id; used only if `unique_id="uvmid+uvmSurveyID"`.
 #'
 #' @details
+#' Columns assumed present in file: `unique_id`, StartDate, EndDate, Duration (in seconds). Ideally, columns Finished and Progress also exist.
+#'
 #' Qualtrics columns that are removed: Status, IPAddress, RecipientLastName, RecipientFirstName, RecipientEmail, ExternalReference, LocationLatitude, LocationLongitude, DistributionChannel, UserLanguage.
 #'
 #' Qualtrics columns that are kept: StartDate, EndDate, Progress, Duration (in seconds), Finished, RecordedDate, ResponseId, ResponseID, SurveyID, and any user-created others.
@@ -75,11 +77,11 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
     ## drop columns (Qualtrics info) {all}
-    dplyr::select(-c("Status", "IPAddress",                             ## kept: StartDate, EndDate,
-                     "RecipientLastName", "RecipientFirstName",         ##       Progress, Duration (in seconds), Finished,
-                     "RecipientEmail", "ExternalReference",             ##       RecordedDate, ResponseId, ResponseID, SurveyID
-                     "LocationLatitude", "LocationLongitude",           ##
-                     "DistributionChannel", "UserLanguage")) |>         ## also: uvmid, uvmSurveyID / PID / SC0, Score / etc.
+    dplyr::select(-dplyr::any_of( c("Status", "IPAddress",               ## kept: StartDate, EndDate,
+                     "RecipientLastName", "RecipientFirstName",          ##       Progress, Duration (in seconds), Finished,
+                     "RecipientEmail", "ExternalReference",              ##       RecordedDate, ResponseId, ResponseID, SurveyID
+                     "LocationLatitude", "LocationLongitude",            ##
+                     "DistributionChannel", "UserLanguage") )) |>        ## also: uvmid, uvmSurveyID / PID / SC0, Score / etc.
 
 
     ## rename to remove spaces/parentheses {all}
@@ -112,7 +114,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
     ## move columns to the front of the dataframe {PID or record_id}:
     do_if(unique_id %in% c("PID", "record_id"),
-          function(df)  dplyr::relocate(df, dplyr::all_of( c("record_id", "DateSt", "DateEn",
+          function(df)  dplyr::relocate(df, dplyr::any_of( c("record_id", "DateSt", "DateEn",
                                                              "Finished", "Progress", "Duration") )) ) |>
 
 
@@ -126,7 +128,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
               dplyr::full_join(key_df, by="uvmid") |>                                    ## adding `record_id` (full_join keeps all rows)
 
-              dplyr::relocate(dplyr::all_of( c("uvmSurveyID", "uvmid",                   ## move columns to the front of the dataframe
+              dplyr::relocate(dplyr::any_of( c("uvmSurveyID", "uvmid",                   ## move columns to the front of the dataframe
                                                "record_id", "DateSt", "DateEn",
                                                "Finished", "Progress", "Duration") ))
 
