@@ -9,7 +9,7 @@
 #' @param id_cols Character vector of columns used to identify which rows to compare.
 #' @param exclude_cols Optional. Character vector of columns left out entirely.
 #' @param later_cols Optional. Character vector of columns only compared if rows are otherwise identical.
-#' @param na_equal Logical. Whether or not a value should be considered identical to NA. Defaults to `FALSE`.
+#' @param na_equal Logical. Whether or not a value should be considered identical to NA. Defaults to `TRUE`.
 #' @param return_new Logical. Whether or not to return a `"new"` data frame (vs. the input data frame with columns added). Defaults to `TRUE`.
 #'
 #' @returns Input or new data frame with columns is_empty (boolean), status (string), matched_rows (string), and one or more <col>_match (boolean).
@@ -29,7 +29,7 @@ fn_check_duplicates <- function(df,
                                 id_cols,
                                 exclude_cols=c(),
                                 later_cols=c(),
-                                na_equal=NA,
+                                na_equal=TRUE,
                                 return_new=TRUE) {
 
   stopifnot(all(id_cols %in% names(df)))
@@ -137,6 +137,7 @@ fn_check_duplicates <- function(df,
 
   ## starting results df
   results <- df[, c(id_cols, "is_empty")]
+  results$NAs_compared <- rowSums(is.na(df[,compare_cols]))
 
 
   # ---- assemble results --------------------------------------------------
