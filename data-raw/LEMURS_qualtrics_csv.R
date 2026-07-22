@@ -24,9 +24,9 @@
 ## reading = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 df_qsur <- readr::read_csv(file="data-raw/LEMURS+Test_July+22%2C+2026_13.24.csv",    ## automatic Qualtrics output (test responses only)
-                           progress=FALSE, show_col_types=FALSE)
+                           progress=FALSE, show_col_types=FALSE) |> as.data.frame()
 df_qdir <- readr::read_csv(file="data-raw/LEMURS_Test_Directory.csv",                ## columns: FirstName, LastName, Email, record_id, PID, uvmid
-                           progress=FALSE, show_col_types=FALSE)
+                           progress=FALSE, show_col_types=FALSE) |> as.data.frame()
 
 
 
@@ -53,19 +53,19 @@ df$uvmid      <- c('uvmid',      '{"ImportId":"uvmid"}',      df_qdir$uvmid,    
 
 ## columns Finished and Progress are inaccurate:
 
-ckb_cols <- c(paste0("P7_C1_TIM_activ_", 1:9), "P7_C1_TIM_activ_9_TEXT")
+ckb_cols <- paste0("P7_C1_TIM_activ_", 1:9)
 val_cols <- setdiff(names(df)[startsWith(names(df), "P7_C1_")],
-                    ckb_cols)
+                    c(ckb_cols,"P7_C1_TIM_activ_9_TEXT"))
 
-df[3:9, ]$Progress  <- as.character(round( ( rowSums(!is.na(df[3:9,val_cols])) + (rowSums(!is.na(df[3:9,ckb_cols])) > 0) ) / ( length(val_cols) + 1) ))
-df[3:9, ]$Finished  <- as.character(round( df[3:9, "Progress"] == "100" ))
+df[3:9, "Progress"]  <- round( ( rowSums(!is.na(df[3:9,val_cols])) + (rowSums(!is.na(df[3:9,ckb_cols])) > 0) ) / ( length(val_cols) + 1) * 100 )
+df[3:9, "Finished"]  <- round( df[3:9, "Progress"] == "100" )
 
 
 
 ## column Duration (in seconds) needs values:
 
-set.seed(777)
-df[3:9, ]$`Duration (in seconds)` <- as.character(round( rgamma(n=7, shape=7.5, scale=1) * 14 ))
+set.seed(77777)
+df[3:9, "Duration (in seconds)"] <- round( rgamma(n=7, shape=7.5, scale=1) * 14 )
 
 
 
@@ -76,10 +76,29 @@ IP_paste = function(m_row) { paste(paste0(m_row[1:3], collapse=""),
                                    m_row[7],
                                    paste0(m_row[8:9], collapse=""),
                                    sep=".") }
-set.seed(777)
-df[3:9, ]$IPAddress <- apply(matrix(sample(0:9, 7*9, replace=TRUE), nrow=7, byrow=TRUE), 1, IP_paste)
+set.seed(77777)
+df[c(3:6,8:9), "IPAddress"] <- apply(matrix(sample(0:9, 6*9, replace=TRUE), nrow=6, byrow=TRUE), 1, IP_paste)
 
-## hmmm
+
+
+## column UserLanguage needs values:
+
+df[3:9, "UserLanguage"] <- "EN"
+
+
+
+## changing values in column DistributionChannel:
+
+df[3:6, "DistributionChannel"] <- "email"
+df[7,   "DistributionChannel"] <- "preview"
+df[8:9, "DistributionChannel"] <- "anonymous"
+
+
+
+## columns LocationLatitude and LocationLongitude need values:
+
+set.seed(77777)
+df[3:6, c("LocationLatitude","LocationLongitude")] <- t(rbind(state.center$y, state.center$x))[sample(1:50, 4), 1:2]
 
 
 
@@ -87,5 +106,7 @@ df[3:9, ]$IPAddress <- apply(matrix(sample(0:9, 7*9, replace=TRUE), nrow=7, byro
 
 ## exporting = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-usethis::use_data(LEMURS_qualtrics_csv, overwrite = TRUE)
+LEMURS_qualtrics_csv <- df
+
+usethis::use_data(LEMURS_qualtrics_csv, overwrite = FALSE)
 
