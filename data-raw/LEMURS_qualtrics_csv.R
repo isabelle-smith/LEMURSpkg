@@ -79,6 +79,8 @@ IP_paste = function(m_row) { paste(paste0(m_row[1:3], collapse=""),
 set.seed(777)
 df[3:9, ]$IPAddress <- apply(matrix(sample(0:9, 7*9, replace=TRUE), nrow=7, byrow=TRUE), 1, IP_paste)
 
+## hmmm
+
 
 
 
