@@ -77,7 +77,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
     ## drop columns (Qualtrics info) {all}
-    dplyr::select(-dplyr::any_of( c("Status", "IPAddress",               ## kept: StartDate, EndDate,
+    dplyr::select(-dplyr::any_of( c("Status", "IPAddress",                              ## kept: StartDate, EndDate,
                                     "RecipientLastName", "RecipientFirstName",          ##       Progress, Duration (in seconds), Finished,
                                     "RecipientEmail", "ExternalReference",              ##       RecordedDate, ResponseId, ResponseID, SurveyID
                                     "LocationLatitude", "LocationLongitude",            ##
@@ -105,6 +105,10 @@ fn_read_qualtrics_data <- function(full_file_path,
                   DateEn = as.POSIXct(.data$EndDate, format="%Y-%m-%d %H:%M:%S"),
                   .keep="unused") |>
 
+
+    ## make column of day (without time):
+    dplyr::mutate(DaySt = as.Date(DateSt, format="%Y-%m-%d %H:%M:%S"),
+                  DayEn = as.Date(DateEn, format="%Y-%m-%d %H:%M:%S")) |>
 
 
     ## renaming {PID}:
