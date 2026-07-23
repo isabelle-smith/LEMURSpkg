@@ -1,6 +1,6 @@
 
 
-## code to prepare `LEMURS_qualtrics_csv` dataset
+## code to prepare `LEMURS_qualtrics_csv_...` datasets
 
 ## Izzy Smith, 2026
 
@@ -23,9 +23,9 @@
 
 ## reading = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-df_qsur <- readr::read_csv(file="data-raw/LEMURS+Test_July+22%2C+2026_13.24.csv",    ## automatic Qualtrics output (test responses only)
+df_qsur <- readr::read_csv(file="data-raw/LEMURS+Test_July+22%2C+2026_13.24.csv",        ## automatic Qualtrics output (all test responses)
                            progress=FALSE, show_col_types=FALSE) |> as.data.frame()
-df_qdir <- readr::read_csv(file="data-raw/LEMURS_Test_Directory.csv",                ## columns: FirstName, LastName, Email, record_id, PID, uvmid
+df_qdir <- readr::read_csv(file="data-raw/LEMURS_Test_Directory.csv",                    ## columns: FirstName, LastName, Email, record_id, PID, uvmid
                            progress=FALSE, show_col_types=FALSE) |> as.data.frame()
 
 
@@ -87,18 +87,22 @@ df[3:9, "UserLanguage"] <- "EN"
 
 
 
-## changing values in column DistributionChannel:
+## changing values in DistributionChannel and Status columns:
 
 df[3:6, "DistributionChannel"] <- "email"
 df[7,   "DistributionChannel"] <- "preview"
 df[8:9, "DistributionChannel"] <- "anonymous"
+
+df[3:6, "Status"] <- 0
+df[7,   "Status"] <- 1
+df[8:9, "Status"] <- 0
 
 
 
 ## columns LocationLatitude and LocationLongitude need values:
 
 set.seed(77777)
-df[3:6, c("LocationLatitude","LocationLongitude")] <- t(rbind(state.center$y, state.center$x))[sample(1:50, 4), 1:2]
+df[3:7, c("LocationLatitude","LocationLongitude")] <- t(rbind(state.center$y, state.center$x))[sample(1:50, 5), 1:2]
 
 
 
@@ -106,7 +110,11 @@ df[3:6, c("LocationLatitude","LocationLongitude")] <- t(rbind(state.center$y, st
 
 ## exporting = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-LEMURS_qualtrics_csv <- df
+LEMURS_qualtrics_file_P <- subset(df, select=-c(record_id, uvmid))
+LEMURS_qualtrics_file_R <- subset(df, select=-c(PID, uvmid))
+LEMURS_qualtrics_file_U <- subset(df, select=-c(record_id, PID))
 
-usethis::use_data(LEMURS_qualtrics_csv, overwrite = FALSE)
+write.csv(LEMURS_qualtrics_file_P, "inst/extdata/LEMURS_qualtrics_file_P.csv")
+write.csv(LEMURS_qualtrics_file_R, "inst/extdata/LEMURS_qualtrics_file_R.csv")
+write.csv(LEMURS_qualtrics_file_U, "inst/extdata/LEMURS_qualtrics_file_U.csv")
 

@@ -14,4 +14,5 @@ LazyData: true
 Imports: 
     dplyr (>= 1.1.4),
     readr (>= 2.1.6),
-    rlang (>= 1.1.6)
+    rlang (>= 1.1.6),
+    stringr (>= 1.5.2)
