@@ -65,7 +65,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
   ## stop if missing `unique_id` + + + + + + + + + + + + + + + + + + + + +
 
-  stopifnot( all(stringr::str_split_1(unique_id, " ") %in% df_names) )
+  if( !all(stringr::str_split_1(unique_id, " ") %in% df_names) ) { stop("ERROR: `unique_id` column(s) missing from file") }
 
   ## + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
@@ -131,7 +131,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
     ## filter, add, and move {uvm}:
-    do_if(unique_id == "uvmid+uvmSurveyID",
+    do_if(unique_id == "uvmid uvmSurveyID",
           function(df) {
 
             df |>

@@ -41,9 +41,19 @@ df <- df_qsur
 df[3:6, c("RecipientFirstName", "RecipientLastName", "RecipientEmail")] <- df_qdir[   , c("FirstName", "LastName", "Email")]
 df[8:9, c("RecipientFirstName", "RecipientLastName", "RecipientEmail")] <- df_qdir[1:2, c("FirstName", "LastName", "Email")]
 
-df$record_id  <- c('record_id',  '{"ImportId":"record_id"}',  df_qdir$record_id,  NA,  df_qdir[1:2, ]$record_id)
-df$PID        <- c('PID',        '{"ImportId":"PID"}',        df_qdir$PID,        NA,  df_qdir[1:2, ]$PID)
-df$uvmid      <- c('uvmid',      '{"ImportId":"uvmid"}',      df_qdir$uvmid,      NA,  df_qdir[1:2, ]$uvmid)
+df$record_id    <- c('record_id',     '{"ImportId":"record_id"}',    df_qdir$record_id,  NA,  df_qdir[1:2, ]$record_id)
+df$PID          <- c('PID',           '{"ImportId":"PID"}',          df_qdir$PID,        NA,  df_qdir[1:2, ]$PID)
+df$uvmid        <- c('uvmid',         '{"ImportId":"uvmid"}',        df_qdir$uvmid,      NA,  df_qdir[1:2, ]$uvmid)
+
+
+
+
+
+## adding = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+## making column uvmSurveyID for use with uvmid:
+
+df$uvmSurveyID  <- c('uvmSurveyID',   '{"ImportId":"uvmSurveyID"}',  rep("14", nrow(df)-2))
 
 
 
@@ -110,11 +120,12 @@ df[3:7, c("LocationLatitude","LocationLongitude")] <- t(rbind(state.center$y, st
 
 ## exporting = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-LEMURS_qualtrics_file_P <- subset(df, select=-c(record_id, uvmid))
-LEMURS_qualtrics_file_R <- subset(df, select=-c(PID, uvmid))
+LEMURS_qualtrics_file_P <- subset(df, select=-c(record_id, uvmid, uvmSurveyID))
+LEMURS_qualtrics_file_R <- subset(df, select=-c(PID, uvmid, uvmSurveyID))
 LEMURS_qualtrics_file_U <- subset(df, select=-c(record_id, PID))
 
-write.csv(LEMURS_qualtrics_file_P, "inst/extdata/LEMURS_qualtrics_file_P.csv")
-write.csv(LEMURS_qualtrics_file_R, "inst/extdata/LEMURS_qualtrics_file_R.csv")
-write.csv(LEMURS_qualtrics_file_U, "inst/extdata/LEMURS_qualtrics_file_U.csv")
+write.csv(LEMURS_qualtrics_file_P, "inst/extdata/LEMURS_qualtrics_file_P.csv", row.names=FALSE)
+write.csv(LEMURS_qualtrics_file_R, "inst/extdata/LEMURS_qualtrics_file_R.csv", row.names=FALSE)
+write.csv(LEMURS_qualtrics_file_U, "inst/extdata/LEMURS_qualtrics_file_U.csv", row.names=FALSE)
+
 
