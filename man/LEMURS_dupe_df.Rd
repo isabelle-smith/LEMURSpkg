@@ -9,7 +9,7 @@
 
 A data frame with 29 rows and 8 columns:
 \describe{
-\item{surveyID}{integer; 3}
+\item{surveyID}{integer; value of 3 for all}
 \item{recordID}{string; one of CA, KS, LA, MD, MI, ND, NH, NM, OR, VT}
 \item{finished}{integer; 1 if progress is 100, 0 otherwise}
 \item{progress}{integer; between 0 and 100}

@@ -115,8 +115,8 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
     ## make column of day (without time):
-    dplyr::mutate(DaySt = as.Date(DateSt, format="%Y-%m-%d %H:%M:%S"),
-                  DayEn = as.Date(DateEn, format="%Y-%m-%d %H:%M:%S")) |>
+    dplyr::mutate(DaySt = as.Date(.data$DateSt, format="%Y-%m-%d %H:%M:%S"),
+                  DayEn = as.Date(.data$DateEn, format="%Y-%m-%d %H:%M:%S")) |>
 
 
     ## renaming {PID}:
@@ -149,7 +149,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
     ## filter out id NAs {all}:
-    dplyr::filter(if_any(matches("^record_id$"), ~!is.na(.x)))
+    dplyr::filter(dplyr::if_any(dplyr::matches("^record_id$"), ~!is.na(.x)))
 
 
 

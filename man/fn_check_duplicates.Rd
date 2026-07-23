@@ -9,7 +9,8 @@ fn_check_duplicates(
   id_cols,
   exclude_cols = c(),
   later_cols = c(),
-  return_df = "new"
+  na_equal = TRUE,
+  return_new = TRUE
 )
 }
 \arguments{
@@ -21,7 +22,9 @@ fn_check_duplicates(
 
 \item{later_cols}{Optional. Character vector of columns only compared if rows are otherwise identical.}
 
-\item{return_df}{Optional. Whether to return the \code{"input"} or a \code{"new"} data frame. Defaults to \code{return_df = "new"}}
+\item{na_equal}{Logical. Whether or not a value should be considered identical to NA. Defaults to \code{TRUE}.}
+
+\item{return_new}{Logical. Whether or not to return a \code{"new"} data frame (vs. the input data frame with columns added). Defaults to \code{TRUE}.}
 }
 \value{
 Input or new data frame with columns is_empty (boolean), status (string), matched_rows (string), and one or more \if{html}{\out{<col>}}_match (boolean).

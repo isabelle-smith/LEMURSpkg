@@ -36,6 +36,8 @@ Data frame without \code{drop_cols}, other Qualtrics columns, and rows that have
 Description goes here.
 }
 \details{
+Columns assumed present in file: \code{unique_id}, StartDate, EndDate, Duration (in seconds). Ideally, columns Finished and Progress also exist.
+
 Qualtrics columns that are removed: Status, IPAddress, RecipientLastName, RecipientFirstName, RecipientEmail, ExternalReference, LocationLatitude, LocationLongitude, DistributionChannel, UserLanguage.
 
 Qualtrics columns that are kept: StartDate, EndDate, Progress, Duration (in seconds), Finished, RecordedDate, ResponseId, ResponseID, SurveyID, and any user-created others.
