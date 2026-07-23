@@ -61,11 +61,13 @@ fn_read_qualtrics_data <- function(full_file_path,
                               progress = FALSE,
                               show_col_types = FALSE) |> as.vector(mode="character")
 
-  ## stop action (missing id) + + + + + + + + + + + + + +
 
-  stopifnot( all(stringr::str_split_1(unique_id) %in% df_names) )
 
-  ## + + + + + + + + + + + + + + + + + + + + + + + + + + + +
+  ## stop if missing `unique_id` + + + + + + + + + + + + + + + + + + + + +
+
+  stopifnot( all(stringr::str_split_1(unique_id, " ") %in% df_names) )
+
+  ## + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 
 
@@ -150,11 +152,11 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
 
-  # ## return value + + + + + + + + + + + + + +
+  ## return value + + + + + + + + + + + + + +
 
   return(df)
 
-  # ## + + + + + + + + + + + + + + + + + + + + +
+  ## + + + + + + + + + + + + + + + + + + + + +
 
 
 }
