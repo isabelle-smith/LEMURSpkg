@@ -126,7 +126,8 @@ fn_read_qualtrics_data <- function(full_file_path,
 
     ## move columns to the front of the dataframe {PID or record_id}:
     do_if(unique_id %in% c("PID", "record_id"),
-          function(df)  dplyr::relocate(df, dplyr::any_of( c("record_id", "DateSt", "DateEn",
+          function(df)  dplyr::relocate(df, dplyr::any_of( c("record_id",
+                                                             "DateSt", "DateEn", "DaySt", "DayEn",
                                                              "Finished", "Progress", "Duration") )) ) |>
 
 
@@ -140,8 +141,8 @@ fn_read_qualtrics_data <- function(full_file_path,
 
               dplyr::full_join(key_df, by="uvmid") |>                                    ## adding `record_id` (full_join keeps all rows)
 
-              dplyr::relocate(dplyr::any_of( c("uvmSurveyID", "uvmid",                   ## move columns to the front of the dataframe
-                                               "record_id", "DateSt", "DateEn",
+              dplyr::relocate(dplyr::any_of( c("uvmSurveyID", "uvmid", "record_id",      ## move columns to the front of the dataframe
+                                               "DateSt", "DateEn", "DaySt", "DayEn",
                                                "Finished", "Progress", "Duration") ))
 
           } ) |>
