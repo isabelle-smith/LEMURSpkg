@@ -42,7 +42,3 @@ Qualtrics columns that are removed: Status, IPAddress, RecipientLastName, Recipi
 
 Qualtrics columns that are kept: StartDate, EndDate, Progress, Duration (in seconds), Finished, RecordedDate, ResponseId, ResponseID, SurveyID, and any user-created others.
 }
-\examples{
-## ADD EXAMPLES
-## put file(s) in `extdata` directory
-}

@@ -26,8 +26,21 @@
 #' @export
 #'
 #' @examples
-#' ## ADD EXAMPLES
-#' ## put file(s) in `extdata` directory
+#'
+#' ## PID
+#' df_p <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_P.csv"),
+#'   unique_id="PID")
+#'
+#'
+#' ## record_id
+#' df_r <- fn_read_qualtrics_data("LEMURSpkg_example("LEMURS_qualtrics_file_R.csv"),
+#'   unique_id="record_id")
+#'
+#'
+#' ## uvmid
+#' df_r <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_U.csv"),
+#'   unique_id="uvmid+uvmSurveyID",
+#'   key_df=LEMURSpkg::LEMURS_key_df)
 
 
 fn_read_qualtrics_data <- function(full_file_path,
@@ -124,6 +137,11 @@ fn_read_qualtrics_data <- function(full_file_path,
           function(df) dplyr::rename(df, record_id=.data$PID) ) |>
 
 
+    ## filter out id NAs {PID or record_id}:
+    do_if(unique_id %in% c("PID", "record_id"),
+          function(df)  dplyr::filter(df, dplyr::if_any(dplyr::matches("^record_id$"), ~!is.na(.x))) ) |>
+
+
     ## move columns to the front of the dataframe {PID or record_id}:
     do_if(unique_id %in% c("PID", "record_id"),
           function(df)  dplyr::relocate(df, dplyr::any_of( c("record_id",
@@ -145,11 +163,7 @@ fn_read_qualtrics_data <- function(full_file_path,
                                                "DateSt", "DateEn", "DaySt", "DayEn",
                                                "Finished", "Progress", "Duration") ))
 
-          } ) |>
-
-
-    ## filter out id NAs {all}:
-    dplyr::filter(dplyr::if_any(dplyr::matches("^record_id$"), ~!is.na(.x)))
+          } )
 
 
 
