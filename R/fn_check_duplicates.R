@@ -141,10 +141,11 @@ fn_check_duplicates <- function(df,
 
 
   # ---- assemble results --------------------------------------------------
+  results$row_num <- seq_len(nrow(results))
+  if (return_new) { results$record_id <- df$record_id }
   results$status       <- status
   results$matched_rows <- sapply(matched_rows, function(x) if (length(x) == 0) NA_character_ else paste(x, collapse = ","))
   results <- cbind(results, later_match)
-  results$row_num <- seq_len(nrow(results))
 
   ## adding result columns to input (`return_new` = FALSE)
   if (!return_new) {
