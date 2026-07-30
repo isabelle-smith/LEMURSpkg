@@ -81,10 +81,10 @@ fn_check_duplicates <- function(df,
   matched_rows <- vector("list", nrow(df))
 
   # one match-flag column per later_col, e.g. variablC_match
-  later_match <- as.data.frame(
-    matrix(NA, nrow = nrow(df), ncol = length(later_cols),
-           dimnames = list(NULL, paste0(later_cols, "_match")))
-  )
+  if (length(later_cols) > 0) { later_match <- as.data.frame( matrix(NA,
+                                                                     nrow = nrow(df),
+                                                                     ncol = length(later_cols),
+                                                                     dimnames = list(NULL, paste0(later_cols, "_match"))) ) }
 
   for (idxs in groups) {
 
@@ -145,7 +145,7 @@ fn_check_duplicates <- function(df,
   if (return_new) { results$record_id <- df$record_id }
   results$status       <- status
   results$matched_rows <- sapply(matched_rows, function(x) if (length(x) == 0) NA_character_ else paste(x, collapse = ","))
-  results <- cbind(results, later_match)
+  if (length(later_cols) > 0) { results <- cbind(results, later_match) }
 
   ## adding result columns to input (`return_new` = FALSE)
   if (!return_new) {
