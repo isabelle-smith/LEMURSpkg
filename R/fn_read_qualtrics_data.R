@@ -4,7 +4,7 @@
 #'
 #' @param full_file_path File path to CSV file from Qualtrics. Assumes headers and 2 rows of Qualtrics info are present.
 #' @param col_types_list Optional. List of column types for [readr::read_csv()].
-#' @param unique_id One of "PID", "record_id", or "uvmid+uvmSurveyID". Column(s) specified must be present in file.
+#' @param unique_id One of `"PID"`, `"record_id"`, or `"uvmid+uvmSurveyID"`. Column(s) specified must be present in file.
 #' @param drop_cols Optional. Character vector of columns to remove. Not required to be present in file.
 #' @param num_vars Optional. Character vector of columns to convert to numeric via [as.numeric()]. Not required to be present in file.
 #' @param int_vars Optional. Character vector of columns to convert to integer via [as.integer()]. Not required to be present in file.
@@ -17,7 +17,7 @@
 #'
 #' Qualtrics columns that are kept: StartDate, EndDate, Progress, Duration (in seconds), Finished, RecordedDate, ResponseId, ResponseID, SurveyID, and any user-created others.
 #'
-#' @returns Data frame without `drop_cols`, other Qualtrics columns, and rows that have NA in `unique_id`.
+#' @returns Data frame without columns listed in `drop_cols`, certain Qualtrics columns, and rows that have NA in `unique_id`.
 #'
 #' @importFrom rlang .data
 #' @export

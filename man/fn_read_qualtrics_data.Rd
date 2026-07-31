@@ -19,7 +19,7 @@ fn_read_qualtrics_data(
 
 \item{col_types_list}{Optional. List of column types for \code{\link[readr:read_delim]{readr::read_csv()}}.}
 
-\item{unique_id}{One of "PID", "record_id", or "uvmid+uvmSurveyID". Column(s) specified must be present in file.}
+\item{unique_id}{One of \code{"PID"}, \code{"record_id"}, or \code{"uvmid+uvmSurveyID"}. Column(s) specified must be present in file.}
 
 \item{drop_cols}{Optional. Character vector of columns to remove. Not required to be present in file.}
 
@@ -30,7 +30,7 @@ fn_read_qualtrics_data(
 \item{key_df}{Data frame with columns uvmid and record_id; used only if \code{unique_id="uvmid+uvmSurveyID"}.}
 }
 \value{
-Data frame without \code{drop_cols}, other Qualtrics columns, and rows that have NA in \code{unique_id}.
+Data frame without columns listed in \code{drop_cols}, certain Qualtrics columns, and rows that have NA in \code{unique_id}.
 }
 \description{
 Read-in and lightly clean a Qualtrics CSV.

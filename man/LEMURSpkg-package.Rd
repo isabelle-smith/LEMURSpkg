@@ -6,7 +6,7 @@
 \alias{LEMURSpkg-package}
 \title{LEMURSpkg: Code Used to Clean the LEMURS Data}
 \description{
-Data cleaning tools made for data from the Lived Experience Measured Using Rings Study.
+Data cleaning tools made for the Lived Experience Measured Using Rings Study.
 }
 \author{
 \strong{Maintainer}: Isabelle T. Smith \email{isabelletsmith@proton.me}

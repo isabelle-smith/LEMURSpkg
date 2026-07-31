@@ -3,9 +3,9 @@
 #' @title Find duplicate rows by ID.
 #'
 #' @param df Data frame to check.
-#' @param unique_id One of "record_id" or "uvmid+uvmSurveyID". Column(s) specified must be present in `df`.
+#' @param unique_id One of `"record_id"` or `"uvmid+uvmSurveyID"`. Column(s) specified must be present in `df`.
 #'
-#' @returns Data frame only duplicate rows but all columns.
+#' @returns Data frame with only duplicate rows but all original columns.
 #'
 #' @importFrom rlang .data
 #' @export
@@ -20,7 +20,13 @@ fn_find_duplicates <- function(df,
                                unique_id) {
 
 
+  ## adding row #s
+  df <- cbind(orig_row_num=seq_along(nrow(df)), df)
+
+
+  ## <<< update this to reflect the values `unique_id` can accept >>>
   valid_ids <- c("record_id", "uvmid+uvmSurveyID")
+
 
   ## . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
   if( !(unique_id %in% valid_ids) ) {

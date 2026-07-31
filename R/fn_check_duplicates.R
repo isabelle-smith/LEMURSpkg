@@ -7,9 +7,10 @@
 #' @param exclude_cols Optional. Character vector of columns left out entirely.
 #' @param later_cols Optional. Character vector of columns only compared if rows are otherwise identical.
 #' @param na_equal Logical. Whether or not a value should be considered identical to NA. Defaults to `TRUE`.
-#' @param return_new Logical. Whether or not to return a `"new"` data frame (vs. the input data frame with columns added). Defaults to `TRUE`.
+#' @param return_new Logical. Whether or not to return a new data frame (vs. the input data frame with columns added). Defaults to `TRUE`.
 #'
-#' @returns Input or new data frame with columns is_empty (boolean), status (string), matched_rows (string), and one or more <col>_match (boolean).
+#' @returns Input or new data frame with columns `dupl_row_num` (integer), `is_empty` (boolean), `status` (string), `matched_rows` (string),
+#'  and as many `<col>_match` (boolean) as there are `later_cols`.
 #'
 #' @importFrom rlang .data
 #' @export
@@ -29,9 +30,11 @@ fn_check_duplicates <- function(df,
                                 na_equal=TRUE,
                                 return_new=TRUE) {
 
+  ## stop actions ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
   stopifnot(all(id_cols %in% names(df)))
   stopifnot(all(exclude_cols %in% names(df)))
   stopifnot(all(later_cols %in% names(df)))
+  stopifnot("orig_row_num" %in% names(df))
 
 
   compare_cols <- base::setdiff(colnames(df), c(id_cols, exclude_cols, later_cols))
@@ -138,11 +141,12 @@ fn_check_duplicates <- function(df,
 
 
   # ---- assemble results --------------------------------------------------
-  results$row_num <- seq_len(nrow(results))
+  results$dupl_row_num <- seq_len(nrow(results))
   if (return_new) { results$record_id <- df$record_id }
   results$status       <- status
   results$matched_rows <- sapply(matched_rows, function(x) if (length(x) == 0) NA_character_ else paste(x, collapse = ","))
   if (length(later_cols) > 0) { results <- cbind(results, later_match) }
+  if (return_new) { results$orig_row_num <- df$orig_row_num }
 
   ## adding result columns to input (`return_new` = FALSE)
   if (!return_new) {

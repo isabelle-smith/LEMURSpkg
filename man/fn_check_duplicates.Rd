@@ -24,10 +24,11 @@ fn_check_duplicates(
 
 \item{na_equal}{Logical. Whether or not a value should be considered identical to NA. Defaults to \code{TRUE}.}
 
-\item{return_new}{Logical. Whether or not to return a \code{"new"} data frame (vs. the input data frame with columns added). Defaults to \code{TRUE}.}
+\item{return_new}{Logical. Whether or not to return a new data frame (vs. the input data frame with columns added). Defaults to \code{TRUE}.}
 }
 \value{
-Input or new data frame with columns is_empty (boolean), status (string), matched_rows (string), and one or more \if{html}{\out{<col>}}_match (boolean).
+Input or new data frame with columns \code{dupl_row_num} (integer), \code{is_empty} (boolean), \code{status} (string), \code{matched_rows} (string),
+and as many \verb{<col>_match} (boolean) as there are \code{later_cols}.
 }
 \description{
 Compare values of duplicate rows.

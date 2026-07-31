@@ -9,10 +9,10 @@ fn_find_duplicates(df, unique_id)
 \arguments{
 \item{df}{Data frame to check.}
 
-\item{unique_id}{One of "record_id" or "uvmid+uvmSurveyID". Column(s) specified must be present in \code{df}.}
+\item{unique_id}{One of \code{"record_id"} or \code{"uvmid+uvmSurveyID"}. Column(s) specified must be present in \code{df}.}
 }
 \value{
-Data frame only duplicate rows but all columns.
+Data frame with only duplicate rows but all original columns.
 }
 \description{
 Find duplicate rows by ID.
