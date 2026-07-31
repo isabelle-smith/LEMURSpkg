@@ -16,6 +16,7 @@
 #' @export
 #'
 #' @examples
+#'
 #' fn_check_duplicates(LEMURSpkg::LEMURS_dupe_df,
 #'   id_cols      = c("surveyID", "recordID"),
 #'   exclude_cols = c("progress", "variablR"),

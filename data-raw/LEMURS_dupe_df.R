@@ -3,6 +3,7 @@
 ## code to create `LEMURS_dupe_df` dataset
 
 ## Izzy Smith, 2026
+## version 20260731
 
 
 
@@ -92,8 +93,18 @@ order.cols <- c("surveyID", "recordID", "finished", "progress", "variablX", "var
 
 perm.val4.sort <- perm.val4[order.sort, order.cols, drop = FALSE]
 rownames(perm.val4.sort) <- NULL
-
 # format(perm.val4.sort)
+
+
+
+
+
+## numbering = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+set.seed(7777)
+perm.val4.sort.num <- cbind(orig_row_num = sample(1:100, nrow(perm.val4.sort)), perm.val4.sort)
+
+# format(perm.val4.sort.num)
 
 
 
@@ -101,7 +112,7 @@ rownames(perm.val4.sort) <- NULL
 
 ## exporting = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-LEMURS_dupe_df <- perm.val4.sort
+LEMURS_dupe_df <- perm.val4.sort.num
 
-usethis::use_data(LEMURS_dupe_df)
+usethis::use_data(LEMURS_dupe_df, overwrite=TRUE)
 

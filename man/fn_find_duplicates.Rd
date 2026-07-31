@@ -18,6 +18,7 @@ Data frame with only duplicate rows but all original columns.
 Find duplicate rows by ID.
 }
 \examples{
+
 ## ADD EXAMPLES
 ## put file(s) in `extdata` directory
 ## name = LEMURS_full_df ???

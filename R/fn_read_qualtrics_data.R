@@ -80,6 +80,10 @@ fn_read_qualtrics_data <- function(full_file_path,
   ## + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 
+  ## checking if row #s needed:
+  if ( !("orig_row_num" %in% df_names) ) { add_row_num <- TRUE }
+
+
 
   ## full dataframe...
   df <- readr::read_csv(full_file_path,
@@ -160,7 +164,10 @@ fn_read_qualtrics_data <- function(full_file_path,
                                                "DateSt", "DateEn", "DaySt", "DayEn",
                                                "Finished", "Progress", "Duration") ))
 
-          } )
+          } ) |>
+
+    do_if(add_row_num,
+          dplyr::mutate(df, orig_row_num = dplyr::row_number(), .before=1))
 
 
 

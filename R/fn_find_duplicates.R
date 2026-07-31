@@ -11,6 +11,7 @@
 #' @export
 #'
 #' @examples
+#'
 #' ## ADD EXAMPLES
 #' ## put file(s) in `extdata` directory
 #' ## name = LEMURS_full_df ???
@@ -20,12 +21,12 @@ fn_find_duplicates <- function(df,
                                unique_id) {
 
 
-  ## adding row #s
-  df <- cbind(orig_row_num=seq_along(nrow(df)), df)
-
-
   ## <<< update this to reflect the values `unique_id` can accept >>>
   valid_ids <- c("record_id", "uvmid+uvmSurveyID")
+
+
+  ## adding row #s
+  if (!("orig_row_num" %in% names(df))) { df <- cbind(orig_row_num=seq_along(nrow(df)), df) }
 
 
   ## . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

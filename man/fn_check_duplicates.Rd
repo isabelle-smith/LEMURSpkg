@@ -34,6 +34,7 @@ and as many \verb{<col>_match} (boolean) as there are \code{later_cols}.
 Compare values of duplicate rows.
 }
 \examples{
+
 fn_check_duplicates(LEMURSpkg::LEMURS_dupe_df,
   id_cols      = c("surveyID", "recordID"),
   exclude_cols = c("progress", "variablR"),
