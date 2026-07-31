@@ -147,14 +147,14 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
     ## filter, add, and move {uvm}:
-    do_if(unique_id == "uvmid uvmSurveyID",
+    do_if(unique_id == "uvmid+uvmSurveyID",
           function(df) {
 
             df |>
 
               dplyr::filter(!is.na(.data$uvmid) & !is.na(.data$uvmSurveyID)) |>          ## filter out id NAs
 
-              dplyr::full_join(key_df, by="uvmid") |>                                    ## adding `record_id` (full_join keeps all rows)
+              dplyr::left_join(key_df, by="uvmid") |>                                    ## adding `record_id` (full_join keeps all rows)
 
               dplyr::relocate(dplyr::any_of( c("uvmSurveyID", "uvmid", "record_id",      ## move columns to the front of the dataframe
                                                "DateSt", "DateEn", "DaySt", "DayEn",
