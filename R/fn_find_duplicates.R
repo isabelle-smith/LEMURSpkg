@@ -2,10 +2,6 @@
 
 #' @title Find duplicate rows by ID.
 #'
-#' @description
-#' Description goes here.
-#'
-#'
 #' @param df Data frame to check.
 #' @param unique_id One of "record_id" or "uvmid+uvmSurveyID". Column(s) specified must be present in `df`.
 #'
@@ -94,7 +90,7 @@ fn_find_duplicates <- function(df,
 
 
   ## returning the final data frame
-  return(df_dr_s)
+  return(as.data.frame(df_dr_s))
 
 
 }

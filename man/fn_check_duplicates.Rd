@@ -30,7 +30,7 @@ fn_check_duplicates(
 Input or new data frame with columns is_empty (boolean), status (string), matched_rows (string), and one or more \if{html}{\out{<col>}}_match (boolean).
 }
 \description{
-Description goes here.
+Compare values of duplicate rows.
 }
 \examples{
 fn_check_duplicates(LEMURSpkg::LEMURS_dupe_df,

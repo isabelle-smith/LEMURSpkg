@@ -7,10 +7,8 @@
 #'
 #' @param path Name of file. If NULL, the example files will be listed.
 #'
-#' @returns
 #' @export
 #'
-#' @examples
 
 
 LEMURSpkg_example <- function(path = NULL) {

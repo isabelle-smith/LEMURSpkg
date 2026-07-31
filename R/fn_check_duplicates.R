@@ -2,9 +2,6 @@
 
 #' @title Compare values of duplicate rows.
 #'
-#' @description
-#' Description goes here.
-#'
 #' @param df Data frame to check.
 #' @param id_cols Character vector of columns used to identify which rows to compare.
 #' @param exclude_cols Optional. Character vector of columns left out entirely.
@@ -153,7 +150,7 @@ fn_check_duplicates <- function(df,
                      df[base::setdiff(names(df), c(id_cols, "is_empty"))])
   }
 
-  return(results)
+  return(as.data.frame(results))
 
 }
 

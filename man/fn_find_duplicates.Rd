@@ -15,7 +15,7 @@ fn_find_duplicates(df, unique_id)
 Data frame only duplicate rows but all columns.
 }
 \description{
-Description goes here.
+Find duplicate rows by ID.
 }
 \examples{
 ## ADD EXAMPLES

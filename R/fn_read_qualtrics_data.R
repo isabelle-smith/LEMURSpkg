@@ -2,9 +2,6 @@
 
 #' @title Read-in and lightly clean a Qualtrics CSV.
 #'
-#' @description
-#' Description goes here.
-#'
 #' @param full_file_path File path to CSV file from Qualtrics. Assumes headers and 2 rows of Qualtrics info are present.
 #' @param col_types_list Optional. List of column types for [readr::read_csv()].
 #' @param unique_id One of "PID", "record_id", or "uvmid+uvmSurveyID". Column(s) specified must be present in file.
@@ -29,18 +26,18 @@
 #'
 #' ## PID
 #' df_p <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_P.csv"),
-#'   unique_id="PID")
+#'                                unique_id="PID")
 #'
 #'
 #' ## record_id
-#' df_r <- fn_read_qualtrics_data("LEMURSpkg_example("LEMURS_qualtrics_file_R.csv"),
-#'   unique_id="record_id")
+#' df_r <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_R.csv"),
+#'                                unique_id="record_id")
 #'
 #'
 #' ## uvmid
-#' df_r <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_U.csv"),
-#'   unique_id="uvmid+uvmSurveyID",
-#'   key_df=LEMURSpkg::LEMURS_key_df)
+#'df_u <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_U.csv"),
+#'                               unique_id="uvmid+uvmSurveyID",
+#'                               key_df=LEMURSpkg::LEMURS_key_df)
 
 
 fn_read_qualtrics_data <- function(full_file_path,
@@ -78,7 +75,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
   ## stop if missing `unique_id` + + + + + + + + + + + + + + + + + + + + +
 
-  if( !all(stringr::str_split_1(unique_id, " ") %in% df_names) ) { stop("ERROR: `unique_id` column(s) missing from file") }
+  if( !all(stringr::str_split_1(unique_id, "\\+") %in% df_names) ) { stop("ERROR: `unique_id` column(s) missing from file") }
 
   ## + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 

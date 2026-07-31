@@ -33,7 +33,7 @@ fn_read_qualtrics_data(
 Data frame without \code{drop_cols}, other Qualtrics columns, and rows that have NA in \code{unique_id}.
 }
 \description{
-Description goes here.
+Read-in and lightly clean a Qualtrics CSV.
 }
 \details{
 Columns assumed present in file: \code{unique_id}, StartDate, EndDate, Duration (in seconds). Ideally, columns Finished and Progress also exist.
@@ -41,4 +41,21 @@ Columns assumed present in file: \code{unique_id}, StartDate, EndDate, Duration 
 Qualtrics columns that are removed: Status, IPAddress, RecipientLastName, RecipientFirstName, RecipientEmail, ExternalReference, LocationLatitude, LocationLongitude, DistributionChannel, UserLanguage.
 
 Qualtrics columns that are kept: StartDate, EndDate, Progress, Duration (in seconds), Finished, RecordedDate, ResponseId, ResponseID, SurveyID, and any user-created others.
+}
+\examples{
+
+## PID
+df_p <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_P.csv"),
+                               unique_id="PID")
+
+
+## record_id
+df_r <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_R.csv"),
+                               unique_id="record_id")
+
+
+## uvmid
+df_u <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_U.csv"),
+                              unique_id="uvmid+uvmSurveyID",
+                              key_df=LEMURSpkg::LEMURS_key_df)
 }
