@@ -171,8 +171,8 @@ fn_read_qualtrics_data <- function(full_file_path,
 
           } ) |>
 
-    do_if(add_row_num,
-          function(df) dplyr::mutate(df, orig_row_num = dplyr::row_number(), .before=1))
+    do_if(add_row_num==TRUE,
+          function(df) dplyr::mutate(df, orig_row_num = dplyr::row_number(), .before=1) )
 
 
 
