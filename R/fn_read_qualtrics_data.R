@@ -81,7 +81,12 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
   ## checking if row #s needed:
-  if ( !("orig_row_num" %in% df_names) ) { add_row_num <- TRUE }
+  if ( "orig_row_num" %in% df_names ) {
+    add_row_num <- FALSE
+
+  } else {
+    add_row_num <- TRUE
+  }
 
 
 
