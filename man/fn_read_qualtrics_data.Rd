@@ -17,7 +17,7 @@ fn_read_qualtrics_data(
 \arguments{
 \item{full_file_path}{File path to CSV file from Qualtrics. Assumes headers and 2 rows of Qualtrics info are present.}
 
-\item{col_types_list}{Optional. List of column types for \code{\link[readr:read_delim]{readr::read_csv()}}.}
+\item{col_types_list}{Optional. List of column types for \code{\link[readr:read_csv]{readr::read_csv()}}.}
 
 \item{unique_id}{One of \code{"PID"}, \code{"record_id"}, or \code{"uvmid+uvmSurveyID"}. Column(s) specified must be present in file.}
 

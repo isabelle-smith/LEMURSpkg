@@ -11,5 +11,10 @@ Data cleaning tools made for the Lived Experience Measured Using Rings Study.
 \author{
 \strong{Maintainer}: Isabelle T. Smith \email{isabelletsmith@proton.me}
 
+Authors:
+\itemize{
+  \item Isabelle T. Smith \email{isabelletsmith@proton.me}
+}
+
 }
 \keyword{internal}

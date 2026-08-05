@@ -1,16 +1,16 @@
 
 
-#' @title Find duplicate rows by ID.
+#' @title Find non-duplicate rows by ID.
 #'
 #' @param df Data frame to check.
 #' @param unique_id One of `"record_id"` or `"uvmid+uvmSurveyID"`. Column(s) specified must be present in `df`.
 #'
-#' @returns Data frame with all original columns and only duplicate rows. Adds column `orig_row_num` if not already present.
+#' @returns Data frame with all original columns and only non-duplicate rows. Adds column `orig_row_num` if not already present.
 #'
 #' @importFrom rlang .data
 #' @export
 #'
-#' @seealso [LEMURSpkg::fn_find_nonduplicates()]
+#' @seealso [LEMURSpkg::fn_find_duplicates()]
 #'
 #' @examples
 #'
@@ -50,7 +50,7 @@ fn_find_duplicates <- function(df,
       df_di <- df |>
         dplyr::select("uvmid", "record_id") |>
         dplyr::count(.data$uvmid, .data$record_id) |>
-        dplyr::filter(.data$n>1) |>
+        dplyr::filter(.data$n==1) |>
         dplyr::mutate(di = .data$uvmid)
 
       ## keeping only the duplicated IDs
@@ -65,7 +65,7 @@ fn_find_duplicates <- function(df,
         dplyr::select("uvmSurveyID", "uvmid", "record_id") |>
         dplyr::group_by(.data$uvmSurveyID) |>
         dplyr::count(.data$uvmid, .data$record_id) |>
-        dplyr::filter(.data$n>1) |>
+        dplyr::filter(.data$n==1) |>
         dplyr::ungroup() |>
         dplyr::mutate(di = paste(.data$uvmSurveyID, .data$uvmid, sep="_"))
 
@@ -76,7 +76,7 @@ fn_find_duplicates <- function(df,
 
     ## sorting/ordering the rows
     df_dr_s <- df_dr |>
-      dplyr::arrange(.data$uvmSurveyID, .data$uvmid, .data$record_id, dplyr::desc(.data$Finished), dplyr::desc(.data$Progress), dplyr::desc(.data$Duration))
+      dplyr::arrange(.data$uvmSurveyID, .data$uvmid, .data$record_id)
 
     ## . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
   } else if (unique_id == "record_id") {
@@ -84,7 +84,7 @@ fn_find_duplicates <- function(df,
     ## finding duplicated IDs
     df_di <- df |>
       dplyr::count(.data$record_id) |>
-      dplyr::filter(.data$n>1) |>
+      dplyr::filter(.data$n==1) |>
       dplyr::mutate(di = .data$record_id)
 
     ## keeping only the duplicated IDs
@@ -92,7 +92,7 @@ fn_find_duplicates <- function(df,
 
     ## sorting/ordering the rows
     df_dr_s <- df_dr |>
-      dplyr::arrange(.data$record_id, dplyr::desc(.data$Finished), dplyr::desc(.data$Progress), dplyr::desc(.data$Duration))
+      dplyr::arrange(.data$record_id)
 
   }
   ## . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
