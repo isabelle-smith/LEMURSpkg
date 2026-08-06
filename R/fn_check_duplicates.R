@@ -4,13 +4,15 @@
 #'
 #' @param df Data frame to check.
 #' @param id_cols Character vector of columns used to identify which rows to compare.
-#' @param exclude_cols Optional. Character vector of columns left out entirely.
-#' @param later_cols Optional. Character vector of columns only compared if rows are otherwise identical.
+#' @param exclude_cols Optional. Character vector of columns to be left out entirely.
+#' @param later_cols Optional. Character vector of columns to be compared only if rows are otherwise identical.
 #' @param na_equal Logical. Whether or not a value should be considered identical to NA. Defaults to `TRUE`.
 #' @param return_new Logical. Whether or not to return a new data frame (vs. the input data frame with columns added). Defaults to `TRUE`.
+#' @param use_date Logical. Whether or not `date_col` from the input data frame should be added to results; used only when `return_new=TRUE`. Defaults to `FALSE`.
+#' @param date_col String. Name of column in input data frame containing dates; used only when `use_date=TRUE`. Defaults to `DateSt`.
 #'
 #' @returns Input or new data frame with columns `dupl_row_num` (integer), `is_empty` (boolean), `status` (string), `matched_rows` (string),
-#'  and as many `<col>_match` (boolean) as there are `later_cols`.
+#'  and as many `<later_col>_match` (boolean) as there are `later_cols`.
 #'
 #' @importFrom rlang .data
 #' @export
@@ -29,13 +31,28 @@ fn_check_duplicates <- function(df,
                                 exclude_cols=c(),
                                 later_cols=c(),
                                 na_equal=TRUE,
-                                return_new=TRUE) {
+                                return_new=TRUE,
+                                use_date=FALSE,
+                                date_col="DateSt") {
 
-  ## stop actions ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+  ## stop actions: ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
   stopifnot(all(id_cols %in% names(df)))
   stopifnot(all(exclude_cols %in% names(df)))
   stopifnot(all(later_cols %in% names(df)))
   stopifnot("orig_row_num" %in% names(df))
+
+  if ( use_date & !(date_col %in% names(df)) ) {
+
+    err_message_date <- cat("column `", date_col, "` not found\n",
+                            "check `date_col` value or set `use_date` to FALSE",
+                            sep="")
+
+    stop(err_message_date)
+
+  }
+
+  ## ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
   compare_cols <- base::setdiff(colnames(df), c(id_cols, exclude_cols, later_cols))
@@ -138,16 +155,17 @@ fn_check_duplicates <- function(df,
 
   ## starting results df
   results <- df[, c(id_cols, "is_empty")]
-  results$NAs_compared <- rowSums(is.na(df[,compare_cols]))
+  results$NAs_compared <- rowSums(is.na(df[, compare_cols]))
 
 
   # ---- assemble results --------------------------------------------------
   results$dupl_row_num <- seq_len(nrow(results))
-  if (return_new) { results$record_id <- df$record_id }
+  if (return_new & ("record_id" %in% names(df)) & !("record_id" %in% id_cols) ) { results$record_id <- df$record_id }
   results$status       <- status
-  results$matched_rows <- sapply(matched_rows, function(x) if (length(x) == 0) NA_character_ else paste(x, collapse = ","))
+  results$matched_rows <- sapply(matched_rows, function(x) { if (length(x) == 0) NA_character_ else paste(x, collapse = ",")} )
   if (length(later_cols) > 0) { results <- cbind(results, later_match) }
   if (return_new) { results$orig_row_num <- df$orig_row_num }
+  if (return_new & use_date) { results$date <- df[, date_col] }
 
   ## adding result columns to input (`return_new` = FALSE)
   if (!return_new) {

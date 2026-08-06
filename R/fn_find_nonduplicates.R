@@ -19,7 +19,7 @@
 #' ## name = LEMURS_full_df ???
 
 
-fn_find_duplicates <- function(df,
+fn_find_nonduplicates <- function(df,
                                unique_id) {
 
 
