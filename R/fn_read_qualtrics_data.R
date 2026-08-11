@@ -38,6 +38,7 @@
 #'df_u <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_U.csv"),
 #'                               unique_id="uvmid+uvmSurveyID",
 #'                               key_df=LEMURSpkg::LEMURS_key_df)
+#'
 
 
 fn_read_qualtrics_data <- function(full_file_path,

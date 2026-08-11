@@ -3,5 +3,7 @@
 export(LEMURSpkg_example)
 export(fn_check_duplicates)
 export(fn_find_duplicates)
+export(fn_find_nonduplicates)
+export(fn_num_to_hex)
 export(fn_read_qualtrics_data)
 importFrom(rlang,.data)

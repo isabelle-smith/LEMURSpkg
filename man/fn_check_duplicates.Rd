@@ -10,7 +10,9 @@ fn_check_duplicates(
   exclude_cols = c(),
   later_cols = c(),
   na_equal = TRUE,
-  return_new = TRUE
+  return_new = TRUE,
+  use_date = FALSE,
+  date_col = "DateSt"
 )
 }
 \arguments{
@@ -18,20 +20,24 @@ fn_check_duplicates(
 
 \item{id_cols}{Character vector of columns used to identify which rows to compare.}
 
-\item{exclude_cols}{Optional. Character vector of columns left out entirely.}
+\item{exclude_cols}{Optional. Character vector of columns to be left out entirely.}
 
-\item{later_cols}{Optional. Character vector of columns only compared if rows are otherwise identical.}
+\item{later_cols}{Optional. Character vector of columns to be compared only if rows are otherwise identical.}
 
 \item{na_equal}{Logical. Whether or not a value should be considered identical to NA. Defaults to \code{TRUE}.}
 
 \item{return_new}{Logical. Whether or not to return a new data frame (vs. the input data frame with columns added). Defaults to \code{TRUE}.}
+
+\item{use_date}{Logical. Whether or not \code{date_col} from the input data frame should be added to results; used only when \code{return_new=TRUE}. Defaults to \code{FALSE}.}
+
+\item{date_col}{String. Name of column in input data frame containing dates; used only when \code{use_date=TRUE}. Defaults to \code{DateSt}.}
 }
 \value{
 Input or new data frame with columns \code{dupl_row_num} (integer), \code{is_empty} (boolean), \code{status} (string), \code{matched_rows} (string),
-and as many \verb{<col>_match} (boolean) as there are \code{later_cols}.
+and as many \verb{<later_col>_match} (boolean) as there are \code{later_cols}.
 }
 \description{
-Compare values of duplicate rows.
+This function was made to be used after \code{\link[=fn_find_duplicates]{fn_find_duplicates()}}.
 }
 \examples{
 
@@ -39,4 +45,5 @@ fn_check_duplicates(LEMURSpkg::LEMURS_dupe_df,
   id_cols      = c("surveyID", "recordID"),
   exclude_cols = c("progress", "variablR"),
   later_cols   = c("variablC"))
+
 }
