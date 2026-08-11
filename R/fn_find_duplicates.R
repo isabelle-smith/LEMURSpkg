@@ -1,6 +1,8 @@
 
 
 #' @title Find duplicate rows by ID.
+#' @description
+#' This function was made to be used after [LEMURSpkg::fn_read_qualtrics_data()].
 #'
 #' @param df Data frame to check.
 #' @param unique_id One of `"record_id"` or `"uvmid+uvmSurveyID"`. Column(s) specified must be present in `df`.

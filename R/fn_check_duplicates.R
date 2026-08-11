@@ -1,6 +1,8 @@
 
 
 #' @title Compare values of duplicate rows.
+#' @description
+#' This function was made to be used after [LEMURSpkg::fn_find_duplicates()].
 #'
 #' @param df Data frame to check.
 #' @param id_cols Character vector of columns used to identify which rows to compare.
