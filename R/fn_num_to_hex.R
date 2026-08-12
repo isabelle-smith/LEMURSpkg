@@ -1,8 +1,11 @@
 
 
 #' Convert Base-10 to Bijective Base-26
+#' @description
+#' Note that this function is **not vectorized**; see [lapply()], etc. to use with multiple inputs.
 #'
-#' @param num Any number. Will be rounded and converted, if not already an integer.
+#'
+#' @param num A single number. Will be rounded and converted, if not already an integer.
 #'
 #' @returns A string that is the bijective base-26 representation of the input number,
 #'    or `NA_character_` for non-positive input.

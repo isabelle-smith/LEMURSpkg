@@ -9,7 +9,7 @@ fn_check_duplicates(
   id_cols,
   exclude_cols = c(),
   later_cols = c(),
-  na_equal = TRUE,
+  na_equal = FALSE,
   return_new = TRUE,
   use_date = FALSE,
   date_col = "DateSt"
@@ -24,7 +24,7 @@ fn_check_duplicates(
 
 \item{later_cols}{Optional. Character vector of columns to be compared only if rows are otherwise identical.}
 
-\item{na_equal}{Logical. Whether or not a value should be considered identical to NA. Defaults to \code{TRUE}.}
+\item{na_equal}{Logical. Whether or not a value should be considered identical to NA. Defaults to \code{FALSE}.}
 
 \item{return_new}{Logical. Whether or not to return a new data frame (vs. the input data frame with columns added). Defaults to \code{TRUE}.}
 

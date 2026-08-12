@@ -1,13 +1,13 @@
 
 
-#' @title Kepp most recent duplicated rows.
+#' @title Keep most recent duplicated rows.
 #' @description
 #' This function was made to be used after [LEMURSpkg::fn_check_duplicates()].
 #'
 #' @param df Data frame to check.
 #' @param id_cols Character vector of columns used to identify which rows to compare.
 #' @param date_col String. Name of column in input data frame containing dates. Defaults to `DateSt`.
-#' @param keep One of `"first"` or `"last"`. Which ????
+#' @param keep One of `"first"` or `"last"`. Which ...
 #'
 #' @returns tbd
 #'

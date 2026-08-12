@@ -8,7 +8,7 @@
 #' @param id_cols Character vector of columns used to identify which rows to compare.
 #' @param exclude_cols Optional. Character vector of columns to be left out entirely.
 #' @param later_cols Optional. Character vector of columns to be compared only if rows are otherwise identical.
-#' @param na_equal Logical. Whether or not a value should be considered identical to NA. Defaults to `TRUE`.
+#' @param na_equal Logical. Whether or not a value should be considered identical to NA. Defaults to `FALSE`.
 #' @param return_new Logical. Whether or not to return a new data frame (vs. the input data frame with columns added). Defaults to `TRUE`.
 #' @param use_date Logical. Whether or not `date_col` from the input data frame should be added to results; used only when `return_new=TRUE`. Defaults to `FALSE`.
 #' @param date_col String. Name of column in input data frame containing dates; used only when `use_date=TRUE`. Defaults to `DateSt`.
@@ -33,7 +33,7 @@ fn_check_duplicates <- function(df,
                                 id_cols,
                                 exclude_cols=c(),
                                 later_cols=c(),
-                                na_equal=TRUE,
+                                na_equal=FALSE,
                                 return_new=TRUE,
                                 use_date=FALSE,
                                 date_col="DateSt") {
@@ -107,6 +107,7 @@ fn_check_duplicates <- function(df,
                                                                      ncol = length(later_cols),
                                                                      dimnames = list(NULL, paste0(later_cols, "_match"))) ) }
 
+  ## core functionality
   for (idxs in groups) {
 
     for (i in idxs) {
@@ -157,18 +158,23 @@ fn_check_duplicates <- function(df,
 
 
   ## starting results df
-  results <- df[, c(id_cols, "is_empty")]
+  results              <- df[, c(id_cols, "is_empty")]
   results$NAs_compared <- rowSums(is.na(df[, compare_cols]))
 
 
   # ---- assemble results --------------------------------------------------
   results$dupl_row_num <- seq_len(nrow(results))
   if (return_new & ("record_id" %in% names(df)) & !("record_id" %in% id_cols) ) { results$record_id <- df$record_id }
+  if (return_new & use_date) { results$date <- df[, date_col] }
   results$status       <- status
   results$matched_rows <- sapply(matched_rows, function(x) { if (length(x) == 0) NA_character_ else paste(x, collapse = ",")} )
   if (length(later_cols) > 0) { results <- cbind(results, later_match) }
   if (return_new) { results$orig_row_num <- df$orig_row_num }
-  if (return_new & use_date) { results$date <- df[, date_col] }
+
+  ## group key
+  base26_groups <- sapply(1:length(levels(group_key)), fn_num_to_hex)
+  results$group        <- base26_groups[as.numeric(group_key)]
+
 
   ## adding result columns to input (`return_new` = FALSE)
   if (!return_new) {

@@ -7,14 +7,14 @@
 fn_num_to_hex(num)
 }
 \arguments{
-\item{num}{Any number. Will be rounded and converted, if not already an integer.}
+\item{num}{A single number. Will be rounded and converted, if not already an integer.}
 }
 \value{
 A string that is the bijective base-26 representation of the input number,
 or \code{NA_character_} for non-positive input.
 }
 \description{
-Convert Base-10 to Bijective Base-26
+Note that this function is \strong{not vectorized}; see \code{\link[=lapply]{lapply()}}, etc. to use with multiple inputs.
 }
 \details{
 Non-integers are rounded by \code{floor(num + 0.5)}--see \emph{References}--then converted using \code{\link[=as.integer]{as.integer()}}.

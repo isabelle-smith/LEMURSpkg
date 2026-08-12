@@ -2,7 +2,7 @@
 % Please edit documentation in R/fn_keep_one_attempt.R
 \name{fn_keep_one_attempt}
 \alias{fn_keep_one_attempt}
-\title{Kepp most recent duplicated rows.}
+\title{Keep most recent duplicated rows.}
 \usage{
 fn_keep_one_attempt(df, id_cols, date_col = "DateSt", keep = "first")
 }
@@ -13,7 +13,7 @@ fn_keep_one_attempt(df, id_cols, date_col = "DateSt", keep = "first")
 
 \item{date_col}{String. Name of column in input data frame containing dates. Defaults to \code{DateSt}.}
 
-\item{keep}{One of \code{"first"} or \code{"last"}. Which ????}
+\item{keep}{One of \code{"first"} or \code{"last"}. Which ...}
 }
 \value{
 tbd

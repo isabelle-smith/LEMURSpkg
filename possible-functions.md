@@ -241,6 +241,40 @@ for (i in 1:length(p4_files)){
 
 &nbsp;
 
+## OLD num_to_hex
+
+```
+fn_num_to_hex <- function(num) {
+
+  ## checking . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+  if (typeof(num) != "integer") { num <- as.integer(floor(num + 0.5)) }
+
+  if (num <= 0) { return(NA_character_) }
+
+  ## function . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+  hex <- ""
+
+  while (num > 0) {
+    num <- num - 1
+    r <- num %% 26
+    hex <- paste0(LETTERS[r + 1], hex)
+    num <- num %/% 26
+  }
+
+  return(hex)
+
+}
+```
+
+
+
+
+
+
+&nbsp;
+
 ## NEXT
 
 
