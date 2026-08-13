@@ -31,7 +31,7 @@
 #'                                         sort_col="rec_date") ## implied `keep="first"`
 #'
 #' ## using `flag_only=FALSE`:
-#' LEMURS_keep_FALSE <- fn_keep_one_attempt(LEMURS_dupe_df,
+#' LEMURS_keep_FALSE <- fn_keep_one_attempt(LEMURS_check_df,
 #'                                          group_col="group",
 #'                                          sort_col="rec_date",
 #'                                          flag_only=FALSE)
@@ -39,8 +39,8 @@
 #' ## comparing output (should be TRUE):
 #'
 #' LEMURS_dupe_compare <- mapply(LEMURSpkg::fn_equal_with_na,
-#'                               subset(LEMURS_dupe_k_TRUE, keep_one==1, select=-keep_one),
-#'                               LEMURS_dupe_k_FALSE)
+#'                               subset(LEMURS_keep_TRUE, keep_one==1, select=-keep_one),
+#'                               LEMURS_keep_FALSE)
 #'
 #' if ( all(LEMURS_dupe_compare) ){
 #'    paste("subset(LEMURS_dupe_kt, keep_one==1, select=-keep_one)",
@@ -62,7 +62,7 @@ fn_keep_one_attempt <- function(df,
 
   ## stop actions: ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-  stopifnot( (group_col %in% names(df)) )
+  stopifnot(group_col %in% names(df))
 
 
   if ( !(keep %in% valid_keep_values) ) {
