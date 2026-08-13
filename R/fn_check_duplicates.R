@@ -47,9 +47,10 @@ fn_check_duplicates <- function(df,
 
   if ( use_date & !(date_col %in% names(df)) ) {
 
-    err_message_date <- cat("column `", date_col, "` not found\n",
-                            "check `date_col` value or set `use_date` to FALSE",
-                            sep="")
+    err_message_date <- paste("[fn_check_duplicates]\n",
+                              "column `", date_col, "` not found\n",
+                              "check `date_col` value, or set `use_date` to FALSE",
+                              sep="")
 
     stop(err_message_date)
 

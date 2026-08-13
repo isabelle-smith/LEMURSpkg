@@ -37,8 +37,10 @@ fn_find_duplicates <- function(df,
   ## . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
   if( !(unique_id %in% valid_ids) ) {
 
-    err_message <- paste("Invalid `unique_id` value. Please use one of:",
-                         paste(paste0("`", valid_ids, "`"), collapse=" or "))
+    err_message <- paste("[fn_find_duplicates]\n",
+                         "Invalid `unique_id` value. Please use one of:",
+                         paste(paste0("\"", valid_ids, "\""), collapse=" or "),
+                         sep="")
 
     stop(err_message)
 

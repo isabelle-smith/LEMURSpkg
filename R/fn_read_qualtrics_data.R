@@ -49,6 +49,18 @@ fn_read_qualtrics_data <- function(full_file_path,
                                    int_vars=c(),
                                    key_df=NULL) {
 
+  ## file error stop ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+  if ( !file.exists(full_file_path) ) {
+
+    err_message <- paste("[fn_read_qualtrics_data]\n",
+                         "file not found:\n",
+                         full_file_path,
+                         sep="")
+
+    stop(err_message)
+
+  } ## ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 
 
   ## helper fx(s) _ _ _ _ _ _ _ _ _ _ _ _ _ _
