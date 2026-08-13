@@ -8,10 +8,11 @@
 #' @param id_cols Character vector of columns used to identify which rows to compare.
 #' @param exclude_cols Optional. Character vector of columns to be left out entirely.
 #' @param later_cols Optional. Character vector of columns to be compared only if rows are otherwise identical.
+#' @param orig_num String. Name of column in input data frame containing original/reference row numbers. Defaults to `"orig_row_num"`.
 #' @param na_equal Logical. Whether or not a value should be considered identical to NA. Defaults to `FALSE`.
 #' @param return_new Logical. Whether or not to return a new data frame (vs. the input data frame with columns added). Defaults to `TRUE`.
 #' @param use_date Logical. Whether or not `date_col` from the input data frame should be added to results; used only when `return_new=TRUE`. Defaults to `FALSE`.
-#' @param date_col String. Name of column in input data frame containing dates; used only when `use_date=TRUE`. Defaults to `DateSt`.
+#' @param date_col String. Name of column in input data frame containing dates; used only when `use_date=TRUE`. Defaults to `"DateSt"`.
 #'
 #' @returns Input or new data frame with columns `dupl_row_num` (integer), `is_empty` (boolean), `status` (string), `matched_rows` (string),
 #'  and as many `<later_col>_match` (boolean) as there are `later_cols`.
@@ -21,10 +22,26 @@
 #'
 #' @examples
 #'
+#' ## returning original:
 #' fn_check_duplicates(LEMURSpkg::LEMURS_dupe_df,
 #'   id_cols      = c("surveyID", "recordID"),
 #'   exclude_cols = c("progress", "variablR"),
-#'   later_cols   = c("variablC"))
+#'   later_cols   = c("variablC"),
+#'   orig_num="orig_row",
+#'   na_equal=FALSE,
+#'   return_new=FALSE)
+#'
+#'
+#' ## returning new & using date:
+#' fn_check_duplicates(LEMURSpkg::LEMURS_dupe_df,
+#'   id_cols      = c("surveyID", "recordID"),
+#'   exclude_cols = c("progress", "variablR"),
+#'   later_cols   = c("variablC"),
+#'   orig_num="orig_row",
+#'   na_equal=FALSE,
+#'   return_new=TRUE,
+#'   use_date=TRUE,
+#'   date_col="rec_date")
 #'
 
 
@@ -33,6 +50,7 @@ fn_check_duplicates <- function(df,
                                 id_cols,
                                 exclude_cols=c(),
                                 later_cols=c(),
+                                orig_num="orig_row_num",
                                 na_equal=FALSE,
                                 return_new=TRUE,
                                 use_date=FALSE,
@@ -43,7 +61,7 @@ fn_check_duplicates <- function(df,
   stopifnot(all(id_cols %in% names(df)))
   stopifnot(all(exclude_cols %in% names(df)))
   stopifnot(all(later_cols %in% names(df)))
-  stopifnot("orig_row_num" %in% names(df))
+  stopifnot(orig_num %in% names(df))
 
   if ( use_date & !(date_col %in% names(df)) ) {
 
@@ -65,18 +83,14 @@ fn_check_duplicates <- function(df,
   # ---- helpers ---------------------------------------------------------
 
   # NA-aware equality: NA == NA is TRUE, and...
-  if (na_equal) {                                   ## NA vs a value is TRUE
+  if (na_equal) {
     val_equal <- function(a, b) {
-      if (is.na(a) && is.na(b)) return(TRUE)
-      if (is.na(a) || is.na(b)) return(TRUE)
-      return(a == b)
+      LEMURSpkg::fn_equal_with_na(a, b, one_na_eq=TRUE)   ## NA vs a value is TRUE
     }
 
-  } else {                                         ## NA vs a value is FALSE (mismatch)
+  } else {
     val_equal <- function(a, b) {
-      if (is.na(a) && is.na(b)) return(TRUE)
-      if (is.na(a) || is.na(b)) return(FALSE)
-      return(a == b)
+      LEMURSpkg::fn_equal_with_na(a, b, one_na_eq=FALSE)  ## NA vs a value is FALSE (mismatch)
     }
 
   }

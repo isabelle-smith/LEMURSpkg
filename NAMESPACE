@@ -2,8 +2,10 @@
 
 export(LEMURSpkg_example)
 export(fn_check_duplicates)
+export(fn_equal_with_na)
 export(fn_find_duplicates)
 export(fn_find_nonduplicates)
+export(fn_keep_one_attempt)
 export(fn_num_to_hex)
 export(fn_read_qualtrics_data)
 importFrom(rlang,.data)

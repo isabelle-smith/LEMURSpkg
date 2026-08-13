@@ -2,22 +2,68 @@
 % Please edit documentation in R/fn_keep_one_attempt.R
 \name{fn_keep_one_attempt}
 \alias{fn_keep_one_attempt}
-\title{Keep most recent duplicated rows.}
+\title{Flag or filter duplicated rows by columns.}
 \usage{
-fn_keep_one_attempt(df, id_cols, date_col = "DateSt", keep = "first")
+fn_keep_one_attempt(
+  df,
+  group_col = "group",
+  sort_col = "DateSt",
+  keep = "first",
+  flag_only = TRUE
+)
 }
 \arguments{
 \item{df}{Data frame to check.}
 
-\item{id_cols}{Character vector of columns used to identify which rows to compare.}
+\item{group_col}{String. Name of column in input data frame that groups duplicate rows. Defaults to \code{group}.}
 
-\item{date_col}{String. Name of column in input data frame containing dates. Defaults to \code{DateSt}.}
+\item{sort_col}{String. Name of column in input data frame containing dates. Defaults to \code{DateSt}.}
 
-\item{keep}{One of \code{"first"} or \code{"last"}. Which ...}
+\item{keep}{One of \code{"first"} or \code{"last"}. Which row in a group to keep/flag, when sorted by \code{sort_col} (ascending). Defaults to \verb{"first}.}
+
+\item{flag_only}{Logical. Whether or not to mark the desired rows without removing others. Defaults to \code{TRUE}.}
 }
 \value{
-tbd
+Data frame with either:
+\enumerate{
+\item all original columns plus column \code{keep_one} and all original rows (if \code{flag_only=TRUE})
+\item all original columns and only one row per duplicate group (if \code{flag_only=FALSE})
+}
 }
 \description{
 This function was made to be used after \code{\link[=fn_check_duplicates]{fn_check_duplicates()}}.
+}
+\examples{
+## `fn_check_duplicates` output:
+LEMURS_check_df <- LEMURSpkg::fn_check_duplicates(LEMURSpkg::LEMURS_dupe_df,
+                                                  id_cols      = c("surveyID", "recordID"),
+                                                  exclude_cols = c("progress", "variablR"),
+                                                  later_cols   = c("variablC"),
+                                                  orig_num="orig_row",
+                                                  na_equal=FALSE,
+                                                  return_new=FALSE)
+
+## applying `fn_keep_one_attempt`:
+LEMURS_keep_TRUE <- fn_keep_one_attempt(LEMURS_check_df,
+                                        group_col="group",
+                                        sort_col="rec_date") ## implied `keep="first"`
+
+## using `flag_only=FALSE`:
+LEMURS_keep_FALSE <- fn_keep_one_attempt(LEMURS_dupe_df,
+                                         group_col="group",
+                                         sort_col="rec_date",
+                                         flag_only=FALSE)
+
+## comparing output (should be TRUE):
+
+LEMURS_dupe_compare <- mapply(LEMURSpkg::fn_equal_with_na,
+                              subset(LEMURS_dupe_k_TRUE, keep_one==1, select=-keep_one),
+                              LEMURS_dupe_k_FALSE)
+
+if ( all(LEMURS_dupe_compare) ){
+   paste("subset(LEMURS_dupe_kt, keep_one==1, select=-keep_one)",
+         "is equal to",
+         "LEMURS_dupe_kf")
+}
+
 }

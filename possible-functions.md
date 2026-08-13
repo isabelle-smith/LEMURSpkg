@@ -275,6 +275,113 @@ fn_num_to_hex <- function(num) {
 
 &nbsp;
 
+## keep_one_attempt EX1
+
+```
+set.seed(777)
+xdf = data.frame(letter=sample(LETTERS[1:3], 20, replace=T),
+                 number=1:20,
+                 values=sample(1:5, 20, replace=T, prob=c(1,2.5,3.5,2,1)/10))
+
+hist(xdf$values, breaks=0:5,cex.main = 1,
+     main=expression(paste("Distribution of variable `",
+                           bold(values),
+                           "` from dataframe `",
+                           bold(xdf),
+                           "`.")),
+     xlab="Values", ylab="Count")
+
+xdf_keep <- xdf |>
+    group_by(letter) |>
+    arrange(number) |>
+    mutate(keep_one = if_else(row_number() == 1, 1L, 0L)) |>
+    ungroup()
+
+xdf_edit <- xdf |>
+    arrange(number) |>
+    distinct(letter, .keep_all=T)
+
+```
+
+
+
+
+
+
+&nbsp;
+
+## keep_one_attempt EX2
+
+```
+set.seed(777)
+xdf1 <- data.frame(var1=sample(c(LETTERS, NA_character_), 15),
+                   var2=1:15)
+xdf2 <- xdf1
+xdf3 <- data.frame(var1=sample(c(LETTERS, NA_character_), 15),
+                   var2=1:15)
+```
+
+
+
+
+
+
+&nbsp;
+
+## keep_one_attempt ONE
+
+```
+edit_df <- df |>
+      dplyr::arrange(!!!rlang::parse_exprs(date_col)) |>
+      dplyr::distinct(!!!rlang::parse_exprs(group_col), .keep_all=T)
+```
+
+
+
+
+
+
+&nbsp;
+
+## keep_one_attempt TWO
+
+```
+edit_df <- df |>
+    dplyr::group_by(!!!rlang::parse_exprs(group_col)) |>
+    dplyr::arrange(!!!rlang::parse_exprs(date_col)) |>
+    dplyr::mutate(firstbydate = dplyr::row_number() == 1) |>
+    dplyr::ungroup() # |>
+    # dplyr::arrange(!!!rlang::parse_exprs(id_cols), !!!rlang::parse_exprs(date_col))
+```
+
+
+
+
+
+
+&nbsp;
+
+## OLD equal_with_na
+
+```
+fn_equal_with_na <- function(x1, x2){
+
+  if (is.na(x1) && is.na(x2)) return(TRUE)
+
+  if (is.na(x1) || is.na(x2)) return(one_na_eq)
+
+  return(x1 == x2)
+  
+}
+```
+
+
+
+
+
+
+&nbsp;
+
 ## NEXT
 
 
