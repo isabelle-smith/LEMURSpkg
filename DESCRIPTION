@@ -1,6 +1,6 @@
 Package: LEMURSpkg
 Title: Code Used to Clean the LEMURS Data
-Version: 0.0.1.3005
+Version: 0.0.1.4000
 Authors@R: 
     person(given=c("Isabelle","T."), family="Smith", email="isabelletsmith@proton.me", role = c("aut", "cre"))
 Description: Data cleaning tools made for the Lived Experience Measured Using Rings Study.
@@ -12,6 +12,7 @@ Depends:
 LazyData: true
 Imports: 
     dplyr (>= 1.2.1),
+    purrr (>= 1.2.2),
     readr (>= 2.2.0),
     rlang (>= 1.3.0),
     stringr (>= 1.6.0)

@@ -191,7 +191,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
   ## return value + + + + + + + + + + + + + +
 
-  return(df)
+  return(as.data.frame(df))
 
   ## + + + + + + + + + + + + + + + + + + + + +
 
