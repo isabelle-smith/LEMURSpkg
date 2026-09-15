@@ -5,14 +5,14 @@
 #' This function was made to be used after [LEMURSpkg::fn_find_duplicates()].
 #'
 #' @param df Data frame to check.
-#' @param id_cols Character vector of columns used to identify which rows to compare.
-#' @param exclude_cols Optional. Character vector of columns to be left out entirely.
-#' @param later_cols Optional. Character vector of columns to be compared only if rows are otherwise identical.
-#' @param orig_num String. Name of column in input data frame containing original/reference row numbers. Defaults to `"orig_row_num"`.
-#' @param na_equal Logical. Whether or not a value should be considered identical to NA. Defaults to `FALSE`.
-#' @param return_new Logical. Whether or not to return a new data frame (vs. the input data frame with columns added). Defaults to `TRUE`.
-#' @param use_date Logical. Whether or not `date_col` from the input data frame should be added to results; used only when `return_new=TRUE`. Defaults to `FALSE`.
-#' @param date_col String. Name of column in input data frame containing dates; used only when `use_date=TRUE`. Defaults to `"DateSt"`.
+#' @param id_cols String(s): columns used to identify which rows to compare.
+#' @param exclude_cols *Optional.* String(s): columns to be left out entirely.
+#' @param later_cols *Optional.* String(s): columns to be compared only if rows are otherwise identical.
+#' @param orig_num String: name of column in input data frame containing original/reference row numbers. Defaults to `"orig_row_num"`.
+#' @param na_equal Logical: whether or not a value should be considered identical to NA. Defaults to `FALSE`.
+#' @param return_new Logical: whether or not to return a new data frame (vs. the input data frame with columns added). Defaults to `TRUE`.
+#' @param use_date Logical: whether or not `date_col` from the input data frame should be added to results; used only when `return_new=TRUE`. Defaults to `FALSE`.
+#' @param date_col String: name of column in input data frame containing dates; used only when `use_date=TRUE`. Defaults to `"DateSt"`.
 #'
 #' @returns Input or new data frame with columns `dupl_row_num` (integer), `is_empty` (boolean), `status` (string), `matched_rows` (string),
 #'  and as many `<later_col>_match` (boolean) as there are `later_cols`.

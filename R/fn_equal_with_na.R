@@ -6,7 +6,7 @@
 #' the value of `one_na_eq` if only one input is `NA`, and
 #' the value of `x1==x2` otherwise.
 #'
-#' If inputs are of differing lengths, both of these things must be true to prevent errors:
+#' **If inputs are of differing lengths, both of these things must be true to prevent errors:**
 #' 1. `mixed_length` is set to `TRUE` (not the default)
 #' 2. the length of the longer input is a multiple of the shorter input
 #'
@@ -14,7 +14,7 @@
 #' @param x1 Any atomic value or vector. Value to be compared to `x2`.
 #' @param x2 Any atomic value or vector. Value to be compared to `x1`.
 #' @param one_na_eq Any atomic value. Will be returned if only one of `x1` or `x2` is `NA`. Defaults to `FALSE`.
-#' @param mixed_lengths Logical. Whether or not to accept input of differing lengths.
+#' @param mixed_lengths Logical. Whether or not to accept input of differing lengths. Defaults to `FALSE`.
 #'
 #' @returns An object of length `max(length(x1), length(x2))` with the same type as `one_na_eq` (default is `logical`).
 #' @export

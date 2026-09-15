@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @details
-#' Non-integers are rounded by `floor(num + 0.5)`--see *References*--then converted using [as.integer()].
+#' Non-integers are rounded by `floor(num + 0.5)` (see *References*), then converted using [as.integer()].
 #'
 #'
 #' @references

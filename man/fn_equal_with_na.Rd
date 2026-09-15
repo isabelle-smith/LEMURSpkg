@@ -13,7 +13,7 @@ fn_equal_with_na(x1, x2, one_na_eq = FALSE, mixed_lengths = FALSE)
 
 \item{one_na_eq}{Any atomic value. Will be returned if only one of \code{x1} or \code{x2} is \code{NA}. Defaults to \code{FALSE}.}
 
-\item{mixed_lengths}{Logical. Whether or not to accept input of differing lengths.}
+\item{mixed_lengths}{Logical. Whether or not to accept input of differing lengths. Defaults to \code{FALSE}.}
 }
 \value{
 An object of length \code{max(length(x1), length(x2))} with the same type as \code{one_na_eq} (default is \code{logical}).
@@ -23,7 +23,7 @@ An object of length \code{max(length(x1), length(x2))} with the same type as \co
 the value of \code{one_na_eq} if only one input is \code{NA}, and
 the value of \code{x1==x2} otherwise.
 
-If inputs are of differing lengths, both of these things must be true to prevent errors:
+\strong{If inputs are of differing lengths, both of these things must be true to prevent errors:}
 \enumerate{
 \item \code{mixed_length} is set to \code{TRUE} (not the default)
 \item the length of the longer input is a multiple of the shorter input

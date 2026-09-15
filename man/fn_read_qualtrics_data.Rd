@@ -6,28 +6,30 @@
 \usage{
 fn_read_qualtrics_data(
   full_file_path,
-  col_types_list = list(.default = "c"),
+  col_types_spec = list(.default = "c"),
   unique_id,
   drop_cols = c(),
   num_vars = c(),
   int_vars = c(),
-  key_df = NULL
+  key_df = NULL,
+  ...
 )
 }
 \arguments{
-\item{full_file_path}{File path to CSV file from Qualtrics. Assumes headers and 2 rows of Qualtrics info are present.}
+\item{full_file_path}{String. File path to CSV file from Qualtrics. Assumes headers and 2 rows of Qualtrics info are present.}
 
-\item{col_types_list}{Optional. List of column types for \code{\link[readr:read_csv]{readr::read_csv()}}.}
+\item{col_types_spec}{\emph{Optional.} A list, string, or \code{\link[readr:cols]{readr::cols()}} specification of column types. Also accepts \code{NULL}.
+Use \code{\link[readr:spec_csv]{readr::spec_csv()}} as a helper. Defaults to character  for all columns.}
 
-\item{unique_id}{One of \code{"PID"}, \code{"record_id"}, or \code{"uvmid+uvmSurveyID"}. Column(s) specified must be present in file.}
+\item{unique_id}{String. Column name(s) corresponding to unique identifier. Column(s) specified must be present in file.}
 
-\item{drop_cols}{Optional. Character vector of columns to remove. Not required to be present in file.}
+\item{drop_cols}{\emph{Optional.} Character vector of columns to remove. Not required to be present in file.}
 
-\item{num_vars}{Optional. Character vector of columns to convert to numeric via \code{\link[=as.numeric]{as.numeric()}}. Not required to be present in file.}
+\item{num_vars}{\emph{Optional.} Character vector of columns to convert to numeric via \code{\link[=as.numeric]{as.numeric()}}. Not required to be present in file.}
 
-\item{int_vars}{Optional. Character vector of columns to convert to integer via \code{\link[=as.integer]{as.integer()}}. Not required to be present in file.}
+\item{int_vars}{\emph{Optional.} Character vector of columns to convert to integer via \code{\link[=as.integer]{as.integer()}}. Not required to be present in file.}
 
-\item{key_df}{Data frame with columns uvmid and record_id; used only if \code{unique_id="uvmid+uvmSurveyID"}.}
+\item{key_df}{Data frame with columns \code{uvmid} and \code{record_id}; used only if \code{unique_id=c("uvmid","uvmSurveyID")}.}
 }
 \value{
 Data frame without columns listed in \code{drop_cols}, certain Qualtrics columns, and rows that have NA in \code{unique_id}.
@@ -56,7 +58,10 @@ df_r <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_R.csv"),
 
 ## uvmid
 df_u <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_U.csv"),
-                              unique_id="uvmid+uvmSurveyID",
+                              unique_id=c("uvmid","uvmSurveyID"),
                               key_df=LEMURSpkg::LEMURS_key_df)
 
+}
+\seealso{
+\code{\link[readr:read_csv]{readr::read_csv()}}
 }

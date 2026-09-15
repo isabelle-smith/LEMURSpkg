@@ -5,10 +5,10 @@
 #' This function was made to be used after [LEMURSpkg::fn_check_duplicates()].
 #'
 #' @param df Data frame to check.
-#' @param group_col String. Name of column in input data frame that groups duplicate rows. Defaults to `group`.
-#' @param sort_col String. Name of column in input data frame containing dates. Defaults to `DateSt`.
+#' @param group_col String: name of column in input data frame that groups duplicate rows. Defaults to `group`.
+#' @param sort_col String: name of column in input data frame containing dates. Defaults to `DateSt`.
 #' @param keep One of `"first"` or `"last"`. Which row in a group to keep/flag, when sorted by `sort_col` (ascending). Defaults to `"first`.
-#' @param flag_only Logical. Whether or not to mark the desired rows without removing others. Defaults to `TRUE`.
+#' @param flag_only Logical: whether or not to mark the desired rows without removing others. Defaults to `TRUE`.
 #'
 #' @returns Data frame with either:
 #' 1. all original columns plus column `keep_one` and all original rows (if `flag_only=TRUE`)

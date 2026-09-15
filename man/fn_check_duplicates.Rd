@@ -21,9 +21,9 @@ fn_check_duplicates(
 
 \item{id_cols}{Character vector of columns used to identify which rows to compare.}
 
-\item{exclude_cols}{Optional. Character vector of columns to be left out entirely.}
+\item{exclude_cols}{\emph{Optional.} Character vector of columns to be left out entirely.}
 
-\item{later_cols}{Optional. Character vector of columns to be compared only if rows are otherwise identical.}
+\item{later_cols}{\emph{Optional.} Character vector of columns to be compared only if rows are otherwise identical.}
 
 \item{orig_num}{String. Name of column in input data frame containing original/reference row numbers. Defaults to \code{"orig_row_num"}.}
 

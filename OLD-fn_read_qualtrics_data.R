@@ -2,14 +2,13 @@
 
 #' @title Read-in and lightly clean a Qualtrics CSV.
 #'
-#' @param full_file_path String: file path to CSV file from Qualtrics. Assumes headers and 2 rows of Qualtrics info are present.
-#' @param col_types_spec *Optional.* A list, string, or [readr::cols()] specification of column types. Also accepts `NULL`.
-#'    Use [readr::spec_csv()] as a helper. Defaults to character  for all columns.
-#' @param unique_id String(s): column corresponding to unique identifier. Column(s) specified must be present in file.
-#' @param drop_cols *Optional.* String(s): columns to remove. Not required to be present in file.
-#' @param num_vars *Optional.* String(s): columns to convert to numeric via [as.numeric()]. Not required to be present in file.
-#' @param int_vars *Optional.* String(s): columns to convert to integer via [as.integer()]. Not required to be present in file.
-#' @param key_df Data frame with columns `uvmid` and `record_id`; used only if `unique_id=c("uvmid","uvmSurveyID")`.
+#' @param full_file_path File path to CSV file from Qualtrics. Assumes headers and 2 rows of Qualtrics info are present.
+#' @param col_types_list Optional. List of column types for [readr::read_csv()].
+#' @param unique_id One of `"PID"`, `"record_id"`, or `"uvmid+uvmSurveyID"`. Column(s) specified must be present in file.
+#' @param drop_cols Optional. Character vector of columns to remove. Not required to be present in file.
+#' @param num_vars Optional. Character vector of columns to convert to numeric via [as.numeric()]. Not required to be present in file.
+#' @param int_vars Optional. Character vector of columns to convert to integer via [as.integer()]. Not required to be present in file.
+#' @param key_df Data frame with columns uvmid and record_id; used only if `unique_id="uvmid+uvmSurveyID"`.
 #'
 #' @details
 #' Columns assumed present in file: `unique_id`, StartDate, EndDate, Duration (in seconds). Ideally, columns Finished and Progress also exist.
@@ -22,8 +21,6 @@
 #'
 #' @importFrom rlang .data
 #' @export
-#'
-#' @seealso [readr::read_csv()]
 #'
 #' @examples
 #'
@@ -39,30 +36,20 @@
 #'
 #' ## uvmid
 #'df_u <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_U.csv"),
-#'                               unique_id=c("uvmid","uvmSurveyID"),
+#'                               unique_id="uvmid+uvmSurveyID",
 #'                               key_df=LEMURSpkg::LEMURS_key_df)
 #'
 
 
 fn_read_qualtrics_data <- function(full_file_path,
-                                   col_types_spec=list(.default = "c"),
+                                   col_types_list=list(.default = "c"),
                                    unique_id,
                                    drop_cols=c(),
                                    num_vars=c(),
                                    int_vars=c(),
-                                   key_df=NULL,
-                                   ...) {
+                                   key_df=NULL) {
 
-
-  ## ~ ~ ~ ~ ~ ~ ~ << update this manually! >> ~ ~ ~ ~ ~ ~ ~
-  possible_unique_ids <- list("PID",
-                              "record_id",
-                              c("uvmid","uvmSurveyID"))
-  ## ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-
-
-  ## file error stop + + + + + + + + + + + + + +
+  ## file error stop ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
   if ( !file.exists(full_file_path) ) {
 
     err_message <- paste("[fn_read_qualtrics_data]\n",
@@ -72,7 +59,7 @@ fn_read_qualtrics_data <- function(full_file_path,
 
     stop(err_message)
 
-  } ## + + + + + + + + + + + + + + + + + + + + +
+  } ## ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
 
@@ -99,11 +86,9 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
 
-  ## stop for `unique_id` values + + + + + + + + + + + + + + + + + + + + +
+  ## stop if missing `unique_id` + + + + + + + + + + + + + + + + + + + + +
 
-  if( !(list(unique_id) %in% possible_unique_ids) ) { stop("ERROR: function cannot accept `unique_id` value") }
-
-  if( !all(unique_id %in% df_names) ) { stop("ERROR: `unique_id` column(s) missing from file") }
+  if( !all(stringr::str_split_1(unique_id, "\\+") %in% df_names) ) { stop("ERROR: `unique_id` column(s) missing from file") }
 
   ## + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
@@ -122,7 +107,7 @@ fn_read_qualtrics_data <- function(full_file_path,
   df <- readr::read_csv(full_file_path,
                         col_names = df_names,
                         skip = 3,
-                        col_types = col_types_spec,
+                        col_types = col_types_list,
                         progress = FALSE,
                         show_col_types = FALSE) |>
 
@@ -166,37 +151,36 @@ fn_read_qualtrics_data <- function(full_file_path,
                   DayEn = as.Date(.data$DateEn, format="%Y-%m-%d %H:%M:%S")) |>
 
 
-    ## move columns to the left-hand side:
-    dplyr::relocate(dplyr::any_of( c("DateSt", "DateEn", "DaySt", "DayEn",
-                                     "Finished", "Progress", "Duration") )) |>
-
-
     ## renaming {PID}:
     do_if(unique_id=="PID",
           function(df) dplyr::rename(df, record_id=.data$PID) ) |>
 
 
     ## filter out id NAs {PID or record_id}:
-    do_if( ((unique_id=="PID") | (unique_id=="record_id")),
+    do_if(unique_id %in% c("PID", "record_id"),
           function(df)  dplyr::filter(df, dplyr::if_any(dplyr::matches("^record_id$"), ~!is.na(.x))) ) |>
 
 
     ## move columns to the front of the dataframe {PID or record_id}:
-    do_if( ((unique_id=="PID") | (unique_id=="record_id")),
-          function(df)  dplyr::relocate(df, dplyr::any_of( c("record_id") )) ) |>
+    do_if(unique_id %in% c("PID", "record_id"),
+          function(df)  dplyr::relocate(df, dplyr::any_of( c("record_id",
+                                                             "DateSt", "DateEn", "DaySt", "DayEn",
+                                                             "Finished", "Progress", "Duration") )) ) |>
 
 
     ## filter, add, and move {uvm}:
-    do_if(unique_id == c("uvmid","uvmSurveyID"),
+    do_if(unique_id == "uvmid+uvmSurveyID",
           function(df) {
 
             df |>
 
-              dplyr::filter(!is.na(.data$uvmid) & !is.na(.data$uvmSurveyID)) |>           ## filter out id NAs
+              dplyr::filter(!is.na(.data$uvmid) & !is.na(.data$uvmSurveyID)) |>          ## filter out id NAs
 
-              dplyr::left_join(key_df, by="uvmid") |>                                     ## adding `record_id` (full_join keeps all rows)
+              dplyr::left_join(key_df, by="uvmid") |>                                    ## adding `record_id` (full_join keeps all rows)
 
-              dplyr::relocate(dplyr::any_of( c("uvmSurveyID", "uvmid", "record_id") ))    ## move columns to the front of the dataframe
+              dplyr::relocate(dplyr::any_of( c("uvmSurveyID", "uvmid", "record_id",      ## move columns to the front of the dataframe
+                                               "DateSt", "DateEn", "DaySt", "DayEn",
+                                               "Finished", "Progress", "Duration") ))
 
           } ) |>
 

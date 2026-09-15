@@ -5,7 +5,7 @@
 #' This function was made to be used after [LEMURSpkg::fn_read_qualtrics_data()].
 #'
 #' @param df Data frame to check.
-#' @param unique_id One of `"record_id"` or `"uvmid+uvmSurveyID"`. Column(s) specified must be present in `df`.
+#' @param id_type One of `"record_id"` or `"uvmid+uvmSurveyID"`. Column(s) specified must be present in `df`.
 #'
 #' @returns Data frame with all original columns and only duplicate rows. Adds column `orig_row_num` if not already present.
 #'
@@ -23,10 +23,10 @@
 
 
 fn_find_duplicates <- function(df,
-                               unique_id) {
+                               id_type) {
 
 
-  ## <<< update this to reflect the values `unique_id` can accept >>>
+  ## <<< update this to reflect the values `id_type` can accept >>>
   valid_ids <- c("record_id", "uvmid+uvmSurveyID")
 
 
@@ -35,10 +35,10 @@ fn_find_duplicates <- function(df,
 
 
   ## . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-  if( !(unique_id %in% valid_ids) ) {
+  if( !(id_type %in% valid_ids) ) {
 
     err_message <- paste("[fn_find_duplicates]\n",
-                         "Invalid `unique_id` value. Please use one of:",
+                         "Invalid `id_type` value. Please use one of:",
                          paste(paste0("\"", valid_ids, "\""), collapse=" or "),
                          sep="")
 
@@ -46,7 +46,7 @@ fn_find_duplicates <- function(df,
 
 
     ## . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-  } else if (unique_id=="uvmid+uvmSurveyID") {
+  } else if (id_type=="uvmid+uvmSurveyID") {
 
     ## only 1 SurveyID value
     if (length(unique(df$uvmSurveyID))==1){
@@ -84,7 +84,7 @@ fn_find_duplicates <- function(df,
       dplyr::arrange(.data$uvmSurveyID, .data$uvmid, .data$record_id, dplyr::desc(.data$Finished), dplyr::desc(.data$Progress), dplyr::desc(.data$Duration))
 
     ## . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-  } else if (unique_id == "record_id") {
+  } else if (id_type == "record_id") {
 
     ## finding duplicated IDs
     df_di <- df |>

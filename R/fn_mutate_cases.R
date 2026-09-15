@@ -3,7 +3,7 @@
 #' Make Cases for `mutate`
 #'
 #' @param case_v A character vector of names for the new variables.
-#' @param name_v A character vector of expressions
+#' @param name_v A character vector of expressions...???
 #'
 #' @returns A spliced list of expressions, ready to use in [dplyr::mutate()].
 #' @export

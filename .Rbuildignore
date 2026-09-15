@@ -3,3 +3,5 @@
 ^data-raw$
 ^LICENSE\.md$
 ^possible-functions.md$
+^OLD-.*\.R$
+^SCRATCH\.Rmd$

@@ -1,0 +1,89 @@
+---
+title: "SCRATCH"
+subtitle: "LEMURSpkg"
+author: "Isabelle Smith"
+date: |+ 
+  <em>Created:</em> 15 Sep 2026  
+  <em>Generated:</em> `r format(Sys.Date(), '%d %b %Y')`
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    code_folding: hide
+  pdf_document:
+    toc: true
+    toc_depth: '4'
+abstract: ''
+---
+
+
+&nbsp;  
+&nbsp;  
+
+
+```{r setup}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+
+
+newline <- "\n"
+
+
+divider <- function(length_out, char_str="-", spac_str=" ") {
+  
+  
+  ## stops - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  if ( !all(is.numeric(length_out)) )         { stop("Input `length_out` value must be numeric.")}
+  if ( any(length_out <= 0) )                 { stop("Input `length_out` value must be strictly positive.")}
+  if ( any(typeof(char_str) != "character") ) { stop("Input `char_str` value must be characters only.") }
+  if ( any(typeof(spac_str) != "character") ) { stop("Input `spac_str` value must be characters only.") }
+  ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  
+  
+  rep_str <- paste0(spac_str,
+                    char_str)
+  
+  rep_tim <- ceiling( (length_out - nchar(char_str)) / nchar(rep_str) )
+  
+  divider <- ifelse(rep_tim>0,
+                    paste0(char_str, strrep(rep_str, rep_tim)),
+                    char_str)
+  
+  return(divider)
+  
+}
+
+cat0 <- function(..., sep="") {
+  cat(..., sep=sep)
+}
+
+```
+
+
+
+
+
+## START
+
+```{r fn_mutate_cases_20260915}
+
+xxx_fn_mutate_cases <- function(case_v, name_v){
+    
+    return( purrr::set_names(rlang::parse_exprs(case_v), name_v) )
+    
+}
+
+xxx_cv <- c("speed+dist","speed-dist","speed/dist")
+xxx_nv <- c("sum", "diff", "ratio")
+
+xxx_cars <- cars |> dplyr::mutate(!!!xxx_fn_mutate_cases(xxx_cv, xxx_nv))
+
+```
+
+
+
+## END
+
+
