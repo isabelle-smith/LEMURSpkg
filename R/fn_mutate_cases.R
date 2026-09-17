@@ -5,14 +5,12 @@
 #' @param case_v A character vector of expressions containing the code to create the new variables.
 #' @param name_v A character vector of names for the new variables.
 #'
-#' @returns A list of parsed expressions, ready to be spliced (see [rlang::splice()]) and used in [dplyr::mutate()].
+#' @returns A list of parsed expressions (via [rlang::parse_exprs()]), ready to be spliced (see `!!!` aka [rlang::splice()]) and used in a [dplyr::mutate()] statement.
 #'
 #' @importFrom rlang parse_exprs
 #' @importFrom purrr set_names
 #'
 #' @export
-#'
-#' @seealso [rlang::parse_exprs()]
 #'
 #' @examples
 #'

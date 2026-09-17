@@ -10,6 +10,7 @@
 #' @returns Data frame with all original columns and only non-duplicate rows. Adds column `orig_row_num` if not already present.
 #'
 #' @importFrom rlang .data
+#' @importFrom dplyr select count filter mutate group_by ungroup arrange desc
 #'
 #' @export
 #'

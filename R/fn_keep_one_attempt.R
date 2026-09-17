@@ -14,6 +14,9 @@
 #' 1. all original columns plus column `keep_one` and all original rows (if `flag_only=TRUE`)
 #' 2. all original columns and only one row per duplicate group (if `flag_only=FALSE`)
 #'
+#' @importFrom rlang parse_exprs
+#' @importFrom dplyr group_by arrange mutate if_else row_number ungroup distinct
+#'
 #' @export
 #'
 #' @examples

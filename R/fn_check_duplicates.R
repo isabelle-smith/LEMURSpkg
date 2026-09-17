@@ -126,7 +126,7 @@ fn_check_duplicates <- function(df,
   for (idxs in groups) {
 
     for (i in idxs) {
-      others <- dplyr::setdiff(idxs, i)
+      others <- base::setdiff(idxs, i)
 
       if (df$is_empty[i]) {
         status[[i]] <- "empty"

@@ -12,7 +12,7 @@ fn_mutate_cases(case_v, name_v)
 \item{name_v}{A character vector of names for the new variables.}
 }
 \value{
-A list of parsed expressions, ready to be spliced (see \code{\link[rlang:splice]{rlang::splice()}}) and used in \code{\link[dplyr:mutate]{dplyr::mutate()}}.
+A list of parsed expressions (via \code{\link[rlang:parse_exprs]{rlang::parse_exprs()}}), ready to be spliced (see \verb{!!!} aka \code{\link[rlang:splice]{rlang::splice()}}) and used in a \code{\link[dplyr:mutate]{dplyr::mutate()}} statement.
 }
 \description{
 Make Cases for \code{mutate}
@@ -26,7 +26,4 @@ x_cars2 <- cars |> dplyr::mutate(!!!fn_mutate_cases(x_cases, x_names))
 
 format(x_cars2)
 
-}
-\seealso{
-\code{\link[rlang:parse_exprs]{rlang::parse_exprs()}}
 }
