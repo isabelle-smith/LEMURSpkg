@@ -20,7 +20,7 @@
 #' @returns Data frame without columns listed in `drop_cols`, certain Qualtrics columns, and rows that have NA in `unique_id`.
 #'
 #' @importFrom rlang .data
-#' @export
+#' #export
 #'
 #' @examples
 #'
@@ -41,7 +41,7 @@
 #'
 
 
-fn_read_qualtrics_data <- function(full_file_path,
+OLDfn_read_qualtrics_data <- function(full_file_path,
                                    col_types_list=list(.default = "c"),
                                    unique_id,
                                    drop_cols=c(),
