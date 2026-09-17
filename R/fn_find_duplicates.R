@@ -10,6 +10,7 @@
 #' @returns Data frame with all original columns and only duplicate rows. Adds column `orig_row_num` if not already present.
 #'
 #' @importFrom rlang .data
+#'
 #' @export
 #'
 #' @seealso [LEMURSpkg::fn_find_nonduplicates()]

@@ -15,6 +15,7 @@
 #' 2. all original columns and only one row per duplicate group (if `flag_only=FALSE`)
 #'
 #' @export
+#'
 #' @examples
 #' ## `fn_check_duplicates` output:
 #' LEMURS_check_df <- LEMURSpkg::fn_check_duplicates(LEMURSpkg::LEMURS_dupe_df,

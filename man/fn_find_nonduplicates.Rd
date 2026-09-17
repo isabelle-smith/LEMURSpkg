@@ -4,12 +4,12 @@
 \alias{fn_find_nonduplicates}
 \title{Find non-duplicate rows by ID.}
 \usage{
-fn_find_nonduplicates(df, unique_id)
+fn_find_nonduplicates(df, id_type)
 }
 \arguments{
 \item{df}{Data frame to check.}
 
-\item{unique_id}{One of \code{"record_id"} or \code{"uvmid+uvmSurveyID"}. Column(s) specified must be present in \code{df}.}
+\item{id_type}{One of \code{"record_id"} or \code{"uvmid+uvmSurveyID"}. Column(s) specified must be present in \code{df}.}
 }
 \value{
 Data frame with all original columns and only non-duplicate rows. Adds column \code{orig_row_num} if not already present.

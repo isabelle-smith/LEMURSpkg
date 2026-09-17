@@ -5,6 +5,7 @@
 #' @param full_file_path String: file path to CSV file from Qualtrics. Assumes headers and 2 rows of Qualtrics info are present.
 #' @param col_types_spec *Optional.* A list, string, or [readr::cols()] specification of column types. Also accepts `NULL`.
 #'    Use [readr::spec_csv()] as a helper. Defaults to character  for all columns.
+#' @param ... Additional arguments to [readr::read_csv()].
 #' @param unique_id String(s): column corresponding to unique identifier. Column(s) specified must be present in file.
 #' @param drop_cols *Optional.* String(s): columns to remove. Not required to be present in file.
 #' @param num_vars *Optional.* String(s): columns to convert to numeric via [as.numeric()]. Not required to be present in file.
@@ -46,12 +47,12 @@
 
 fn_read_qualtrics_data <- function(full_file_path,
                                    col_types_spec=list(.default = "c"),
+                                   ...,
                                    unique_id,
                                    drop_cols=c(),
                                    num_vars=c(),
                                    int_vars=c(),
-                                   key_df=NULL,
-                                   ...) {
+                                   key_df=NULL) {
 
 
   ## ~ ~ ~ ~ ~ ~ ~ << update this manually! >> ~ ~ ~ ~ ~ ~ ~
@@ -172,22 +173,22 @@ fn_read_qualtrics_data <- function(full_file_path,
 
 
     ## renaming {PID}:
-    do_if(unique_id=="PID",
+    do_if( all(unique_id=="PID"),
           function(df) dplyr::rename(df, record_id=.data$PID) ) |>
 
 
     ## filter out id NAs {PID or record_id}:
-    do_if( ((unique_id=="PID") | (unique_id=="record_id")),
+    do_if( all((unique_id=="PID") | (unique_id=="record_id")),
           function(df)  dplyr::filter(df, dplyr::if_any(dplyr::matches("^record_id$"), ~!is.na(.x))) ) |>
 
 
     ## move columns to the front of the dataframe {PID or record_id}:
-    do_if( ((unique_id=="PID") | (unique_id=="record_id")),
+    do_if( all((unique_id=="PID") | (unique_id=="record_id")),
           function(df)  dplyr::relocate(df, dplyr::any_of( c("record_id") )) ) |>
 
 
     ## filter, add, and move {uvm}:
-    do_if(unique_id == c("uvmid","uvmSurveyID"),
+    do_if( all((unique_id=="uvmid") | (unique_id=="uvmSurveyID")),
           function(df) {
 
             df |>

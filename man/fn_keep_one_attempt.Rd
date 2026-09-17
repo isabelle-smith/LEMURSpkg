@@ -15,13 +15,13 @@ fn_keep_one_attempt(
 \arguments{
 \item{df}{Data frame to check.}
 
-\item{group_col}{String. Name of column in input data frame that groups duplicate rows. Defaults to \code{group}.}
+\item{group_col}{String: name of column in input data frame that groups duplicate rows. Defaults to \code{group}.}
 
-\item{sort_col}{String. Name of column in input data frame containing dates. Defaults to \code{DateSt}.}
+\item{sort_col}{String: name of column in input data frame containing dates. Defaults to \code{DateSt}.}
 
 \item{keep}{One of \code{"first"} or \code{"last"}. Which row in a group to keep/flag, when sorted by \code{sort_col} (ascending). Defaults to \verb{"first}.}
 
-\item{flag_only}{Logical. Whether or not to mark the desired rows without removing others. Defaults to \code{TRUE}.}
+\item{flag_only}{Logical: whether or not to mark the desired rows without removing others. Defaults to \code{TRUE}.}
 }
 \value{
 Data frame with either:

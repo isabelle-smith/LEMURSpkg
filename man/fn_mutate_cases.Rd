@@ -7,20 +7,26 @@
 fn_mutate_cases(case_v, name_v)
 }
 \arguments{
-\item{case_v}{A character vector of names for the new variables.}
+\item{case_v}{A character vector of expressions containing the code to create the new variables.}
 
-\item{name_v}{A character vector of expressions}
+\item{name_v}{A character vector of names for the new variables.}
 }
 \value{
-A spliced list of expressions, ready to use in \code{\link[dplyr:mutate]{dplyr::mutate()}}.
+A list of parsed expressions, ready to be spliced (see \code{\link[rlang:splice]{rlang::splice()}}) and used in \code{\link[dplyr:mutate]{dplyr::mutate()}}.
 }
 \description{
 Make Cases for \code{mutate}
 }
 \examples{
-## tbd
+
+x_cases <- c("speed+dist","speed-dist","speed/dist")
+x_names <- c("sum", "diff", "ratio")
+
+x_cars2 <- cars |> dplyr::mutate(!!!fn_mutate_cases(x_cases, x_names))
+
+format(x_cars2)
 
 }
 \seealso{
-\code{\link[rlang:parse_exprs]{rlang::parse_exprs()}} and \code{\link[rlang:splice]{rlang::splice()}}
+\code{\link[rlang:parse_exprs]{rlang::parse_exprs()}}
 }

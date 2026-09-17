@@ -17,7 +17,7 @@ or \code{NA_character_} for non-positive input.
 Note that this function is \strong{not vectorized}; see \code{\link[=lapply]{lapply()}}, etc. to use with multiple inputs.
 }
 \details{
-Non-integers are rounded by \code{floor(num + 0.5)}--see \emph{References}--then converted using \code{\link[=as.integer]{as.integer()}}.
+Non-integers are rounded by \code{floor(num + 0.5)} (see \emph{References}), then converted using \code{\link[=as.integer]{as.integer()}}.
 }
 \examples{
 ## basic use:

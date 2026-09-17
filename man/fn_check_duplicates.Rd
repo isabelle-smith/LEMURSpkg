@@ -19,21 +19,21 @@ fn_check_duplicates(
 \arguments{
 \item{df}{Data frame to check.}
 
-\item{id_cols}{Character vector of columns used to identify which rows to compare.}
+\item{id_cols}{String(s): columns used to identify which rows to compare.}
 
-\item{exclude_cols}{\emph{Optional.} Character vector of columns to be left out entirely.}
+\item{exclude_cols}{\emph{Optional.} String(s): columns to be left out entirely.}
 
-\item{later_cols}{\emph{Optional.} Character vector of columns to be compared only if rows are otherwise identical.}
+\item{later_cols}{\emph{Optional.} String(s): columns to be compared only if rows are otherwise identical.}
 
-\item{orig_num}{String. Name of column in input data frame containing original/reference row numbers. Defaults to \code{"orig_row_num"}.}
+\item{orig_num}{String: name of column in input data frame containing original/reference row numbers. Defaults to \code{"orig_row_num"}.}
 
-\item{na_equal}{Logical. Whether or not a value should be considered identical to NA. Defaults to \code{FALSE}.}
+\item{na_equal}{Logical: whether or not a value should be considered identical to NA. Defaults to \code{FALSE}.}
 
-\item{return_new}{Logical. Whether or not to return a new data frame (vs. the input data frame with columns added). Defaults to \code{TRUE}.}
+\item{return_new}{Logical: whether or not to return a new data frame (vs. the input data frame with columns added). Defaults to \code{TRUE}.}
 
-\item{use_date}{Logical. Whether or not \code{date_col} from the input data frame should be added to results; used only when \code{return_new=TRUE}. Defaults to \code{FALSE}.}
+\item{use_date}{Logical: whether or not \code{date_col} from the input data frame should be added to results; used only when \code{return_new=TRUE}. Defaults to \code{FALSE}.}
 
-\item{date_col}{String. Name of column in input data frame containing dates; used only when \code{use_date=TRUE}. Defaults to \code{"DateSt"}.}
+\item{date_col}{String: name of column in input data frame containing dates; used only when \code{use_date=TRUE}. Defaults to \code{"DateSt"}.}
 }
 \value{
 Input or new data frame with columns \code{dupl_row_num} (integer), \code{is_empty} (boolean), \code{status} (string), \code{matched_rows} (string),
