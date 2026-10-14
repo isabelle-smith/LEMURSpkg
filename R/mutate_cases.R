@@ -17,13 +17,13 @@
 #' x_cases <- c("speed+dist","speed-dist","speed/dist")
 #' x_names <- c("sum", "diff", "ratio")
 #'
-#' x_cars2 <- cars |> dplyr::mutate(!!!fn_mutate_cases(x_cases, x_names))
+#' x_cars2 <- cars |> dplyr::mutate(!!!mutate_cases(x_cases, x_names))
 #'
 #' format(x_cars2)
 #'
 
 
-fn_mutate_cases <- function(case_v, name_v){
+mutate_cases <- function(case_v, name_v){
 
   return( purrr::set_names(rlang::parse_exprs(case_v), name_v) )
 
