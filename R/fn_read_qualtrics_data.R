@@ -24,7 +24,7 @@
 #' @importFrom rlang .data
 #' @export
 #'
-#' @seealso [readr::read_csv()]
+#' @seealso [readr::read_csv()] (also [base::make.unique()]; used for name repair)
 #'
 #' @examples
 #'
@@ -123,6 +123,7 @@ fn_read_qualtrics_data <- function(full_file_path,
   df <- readr::read_csv(full_file_path,
                         col_names = df_names,
                         skip = 3,
+                        name_repair = make.unique,
                         col_types = col_types_spec,
                         progress = FALSE,
                         show_col_types = FALSE) |>

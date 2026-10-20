@@ -82,6 +82,58 @@ xxx_cars <- cars |> dplyr::mutate(!!!xxx_fn_mutate_cases(xxx_cv, xxx_nv))
 
 ```
 
+&nbsp;
+
+
+
+```{r fn_read_qualtrics_data_20261020}
+
+
+testcsv <- "var1,var2,var3,var1
+1,2,3,1
+a,b,c,a
+7,8,9,7"
+
+
+# readr::read_csv(I(testcsv),
+#                 progress = FALSE,
+#                 show_col_types = FALSE)
+
+
+xcol <- readr::read_csv(I(testcsv),
+                        
+                        col_names=FALSE,
+                        n_max=1,
+                        
+                        progress = FALSE,
+                        show_col_types = FALSE) |> as.vector(mode="character")
+
+# xcol
+
+xdat <- readr::read_csv(I(testcsv),
+                        
+                        col_names=xcol,
+                        skip=1,
+                        
+                        name_repair = make.unique, #       <------- this is what's new       <------- {!}
+                        
+                        progress = FALSE,
+                        show_col_types = FALSE)
+
+# xdat
+
+
+```
+
+&nbsp;
+
+
+
+```{r}
+
+
+```
+
 
 
 ## END
