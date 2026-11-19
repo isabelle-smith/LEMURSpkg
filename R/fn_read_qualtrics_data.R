@@ -121,16 +121,12 @@ fn_read_qualtrics_data <- function(full_file_path,
 
   ## full dataframe...
   df <- readr::read_csv(full_file_path,
-                        col_names = df_names,
+                        col_names = df_names, ## column names from above
                         skip = 3,
                         name_repair = make.unique,
                         col_types = col_types_spec,
                         progress = FALSE,
                         show_col_types = FALSE) |>
-
-
-    ## drop rows 1+2 (Qualtrics info) {all}:
-    dplyr::slice(-c(1,2)) |>
 
 
     ## drop columns (Qualtrics info) {all}
