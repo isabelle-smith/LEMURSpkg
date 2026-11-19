@@ -65,5 +65,5 @@ df_u <- fn_read_qualtrics_data(LEMURSpkg_example("LEMURS_qualtrics_file_U.csv"),
 
 }
 \seealso{
-\code{\link[readr:read_csv]{readr::read_csv()}}
+\code{\link[readr:read_csv]{readr::read_csv()}} (also \code{\link[base:make.names]{base::make.names()}} and \code{\link[base:make.unique]{base::make.unique()}}; used for name repair)
 }

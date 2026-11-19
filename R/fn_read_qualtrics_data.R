@@ -24,7 +24,7 @@
 #' @importFrom rlang .data
 #' @export
 #'
-#' @seealso [readr::read_csv()] (also [base::make.unique()]; used for name repair)
+#' @seealso [readr::read_csv()] (also [base::make.names()] and [base::make.unique()]; used for name repair)
 #'
 #' @examples
 #'
@@ -123,17 +123,18 @@ fn_read_qualtrics_data <- function(full_file_path,
   df <- readr::read_csv(full_file_path,
                         col_names = df_names, ## column names from above
                         skip = 3,
-                        name_repair = make.unique,
+                        name_repair = ~ make.unique(make.names(.x, unique = FALSE), sep="_"), ## anonymous function
                         col_types = col_types_spec,
                         progress = FALSE,
                         show_col_types = FALSE) |>
 
 
     ## drop columns (Qualtrics info) {all}
-    dplyr::select(-dplyr::any_of( c("Status", "IPAddress",                              ## kept: StartDate, EndDate,
-                                    "RecipientLastName", "RecipientFirstName",          ##       Progress, Duration (in seconds), Finished,
-                                    "RecipientEmail", "ExternalReference",              ##       RecordedDate, ResponseId, ResponseID, SurveyID
+    dplyr::select(-dplyr::any_of( c("Status", "IPAddress",                              ## kept: StartDate, EndDate, Progress,
+                                    "RecipientLastName", "RecipientFirstName",          ##       Duration (in seconds), Finished,
+                                    "RecipientEmail", "ExternalReference",              ##       RecordedDate, SurveyID
                                     "LocationLatitude", "LocationLongitude",            ##
+                                    "ResponseId", "ResponseID",                         ##
                                     "DistributionChannel", "UserLanguage") )) |>        ## also: uvmid, uvmSurveyID / PID / SC0, Score / etc.
 
 
